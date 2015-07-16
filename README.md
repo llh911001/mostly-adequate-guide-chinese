@@ -16,7 +16,7 @@
 
     只需借助一到两个微型类库就能提供模拟类似 Scala 或 Haskell 这类语言所需的全部特性。虽然面向对象编程（Object-oriented programing）思想主导着业界，但很明显 OOP 在 JavaScript 里非常古怪：就像在高速公路上露营或者穿着橡胶套鞋跳踢踏舞。我们不得不到处使用 `bind` 以防 `this` 不知不觉地变了，这门语言里没有类[目前还没有]，我们还发明了各种各样的变通方法来应对忘记调用 `new` 关键字的情况，私有成员只有通过闭包（Closure）才能实现。对大多数人来说，函数式编程看起来更加自然。
 
-以上说明，有类型的函数式语言毫无疑问将会成为本书所示范式的最佳试验场。JavaScript 是我们学习这种范式的一种手段，你将它应用于什么地方完全取决于你自己。幸运的是，所有的接口都是数学的，因而也是普适的。最终你会发现你习惯了 swiftz、scalaz、haskell 和 purescript, 以及其他各种数学偏向的语言。
+以上说明，强类型的函数式语言毫无疑问将会成为本书所示范式的最佳试验场。JavaScript 是我们学习这种范式的一种手段，你将它应用于什么地方完全取决于你自己。幸运的是，所有的接口都是数学的，因而也是普适的。最终你会发现你习惯了 swiftz、scalaz、haskell 和 purescript, 以及其他各种数学偏向的语言。
 
 # 目录
 
@@ -24,7 +24,7 @@
 
 * [第 1 章: 我们在做什么？](ch1.md)
   * [介绍](ch1.md#介绍)
-  * [A brief encounter](ch1.md#a-brief-encounter)
+  * [一个简单例子](ch1.md#一个简单例子)
 * [Chapter 2: First Class Functions](ch2.md)
   * [A quick review](ch2.md#a-quick-review)
   * [Why favor first class?](ch2.md#why-favor-first-class)
