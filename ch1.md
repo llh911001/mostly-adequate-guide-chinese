@@ -36,6 +36,7 @@ var result = flock_a.conjoin(flock_c).breed(flock_b).conjoin(flock_a.breed(flock
 ```
 
 我相信没人会写这样糟糕透顶的程序。代码的内部可变状态非常难以追踪，而且，最终的答案还是错的！正确答案是 `16`，但是因为 `flock_a` 在运算过程中永久地改变了，所以得出了错误的结果。这是 IT 部门混乱的表现，非常粗暴的计算方式。（**Needs review** This is anarchy in the I.T.! This is wild animal arithmetic!）
+
 我们试试另一种更函数式的写法：
 
 ```js
