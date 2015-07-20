@@ -1,9 +1,9 @@
-# Chapter 2: First Class Functions
+# 第 2 章: 一等公民的函数
 
-## A quick review
-When we say functions are "first class", we mean they are just like everyone else...so normal class[^coach?]. We can treat functions like any other data type and there is nothing particularly special about them - store them in arrays, pass them around, assign them to variables, what have you.
+## 快速概览
+当我们说函数是“一等公民”的时候，我们实际上说的是它们和其他对象都一样...所以就是普通公民［坐经济舱的人？］。函数真没什么特殊的，我们可以像对待任何其他数据类型一样对待它们——把它们存在数组里，当作参数传递，赋值给变量...随你便。
 
-That is JavaScript 101, but worth a mention as a quick code search on github will show the collective evasion, or perhaps widespread ignorance of the concept. Shall we go for a feigned example? We shall.
+这是 JavaScript 语言的基础概念，不过还是值得提一提的，因为在 Github 上随便一搜就能看到对这个概念的集体无视，或者也可能是无知。我们来看看一个杜撰的例子：
 
 ```js
 var hi = function(name){
@@ -15,8 +15,7 @@ var greeting = function(name) {
 };
 ```
 
-Here, the function wrapper around `hi` in `greeting` is completely redundant. Why? Because functions are *callable* in JavaScript. When `hi` has the `()` at the end it will run and return a value. When it does not, it simply returns the function stored in the variable. Just to be sure, have a look-see:
-
+这里把 `hi` 又包了一层的 `greeting` 函数完全是多余的。为什么？因为 JavaScript 的函数是*可调用*的，当 `hi` 后面紧跟 `()` 的时候就会运行并返回一个值；如果没有 `()`，`hi` 仅仅返回存到这个变量里的函数。我们来确认一下：
 
 ```js
 hi;
@@ -28,7 +27,7 @@ hi("jonas");
 // "Hi jonas"
 ```
 
-Since `greeting` is merely turning around and calling `hi` with the very same argument, we could simply write:
+`greeting` 不过是转了一圈然后以相同的参数调用了 `hi` 函数，因此我们可以这么写：
 
 ```js
 var greeting = hi;
@@ -38,43 +37,43 @@ greeting("times");
 // "Hi times"
 ```
 
-In other words, `hi` is already a function that expects one argument, why place another function around it that simply calls `hi` with the same bloody argument? It doesn't make any damn sense. It's like donning your heaviest parka in the dead of july just to blast the air and demand an ice lolly. It is obnoxiously verbose and, as it happens, bad practice to surround a function with another function merely to delay evaluation. (We'll see why in a moment, but it has to do with maintenance)
+换句话说，`hi` 已经是个接收一个参数的函数了，为何要再定义一个额外的函数，而它仅仅是用这个相同的参数调用 `hi`？完全没有道理。这就像在大夏天里穿上你最厚的大衣，仅仅是为了咒骂滚滚热浪然后吃上个冰棍。真是脱裤子放屁多此一举。用一个函数把另一个函数包起来，目的不过是延迟执行，真的是非常糟糕的编程习惯。（稍后我将告诉你原因，与可维护性密切相关。）
 
-A solid understanding of this is critical before moving on, so let's see a few more fun examples excavated from npm modules.
+深刻理解这个问题对读懂本书后面的内容至关重要，所以我们再来看几个例子，以下代码都来自 npm 上的模块包：
 
 ```js
-// ignorant
+// 太傻了
 var getServerStuff = function(callback){
   return ajaxCall(function(json){
     return callback(json);
   });
 };
 
-// enlightened
+// 这才像样
 var getServerStuff = ajaxCall;
 ```
 
-The world is littered with ajax code exactly like this. Here is the reason both are equivalent:
+我们的世界到处都充斥着这样的垃圾 ajax 代码。以下是上述两种写法等价的原因：
 
 ```js
-// this line
+// 这行
 return ajaxCall(function(json){
   return callback(json);
 });
 
-// is the same as this line
+// 等价于这行
 return ajaxCall(callback);
 
-// so refactor getServerStuff
+// 那么，重构下 getServerStuff
 var getServerStuff = function(callback){
   return ajaxCall(callback);
 };
 
-// ...which is equivalent to this
-var getServerStuff = ajaxCall; // <-- look mum, no ()'s
+// ...就等于
+var getServerStuff = ajaxCall; // <-- 看，没有括号哦
 ```
 
-And that, folks, is how it is done. Once more then we'll see why I'm so insistent.
+伙计们，以上才是写函数的正确方式。一会儿再告诉你为何我对此如此执着。
 
 ```js
 var BlogController = (function() {
@@ -102,17 +101,17 @@ var BlogController = (function() {
 })();
 ```
 
-This ridiculous controller is 99% fluff. We could either rewrite it as:
+这个搞笑的控制器（controller）99% 的代码都是垃圾。这段代码可以重写成这样：
 
 ```js
 var BlogController = {index: Views.index, show: Views.show, create: Db.create, update: Db.update, destroy: Db.destroy};
 ```
 
-...or scrap it altogether as it does nothing other than bundle our Views and Db together.
+...或者直接全部删掉，因为它的作用仅仅就是把视图（Views）和数据库（Db）绑在一起而已。
 
-## Why favor first class?
+## 为何钟爱一等公民？
 
-Okay, let's get down to the reasons to favor First class functions. As we saw in the `getServerStuff` and `BlogController` examples, it's easy to add layers of indirection that have no actual value and only increase the amount of code to maintain and search through. If a function we are needlessly wrapping does change, however, we must also change our wrapper function.
+好了，现在我来解释一下为何如此钟爱函数的原因。前面 `getServerStuff` 和 `BlogController` 两个例子你也都看到了，虽说添加一些没有实际用处的间接层实现起来很容易，但这样做除了徒增代码量，提高维护和检索代码的成本外，没有任何用处。如果一个包裹起来的函数发生了改动，那么这个包裹函数也要做相应的变更。
 
 ```js
 httpGet('/post/2', function(json){
@@ -120,32 +119,32 @@ httpGet('/post/2', function(json){
 });
 ```
 
-If `httpGet` were to change to send a possible `err`, we would need to go back and change the "glue".
+如果 `httpGet` 要改成可以抛出一个可能出现的 `err` 异常，那我们还要回过头去把“胶水”函数也改了。
 
 ```js
-// go back to every httpGet call in the application and explicitly pass err along.
+// 把整个应用里的所有 httpGet 调用都改成这样，可以传递 err 参数。
 httpGet('/post/2', function(json, err){
   return renderPost(json, err);
 });
 ```
 
-Had we written it as a first class function, much less would need to change:
+写成一等公民函数的形式（译者注：即把 renderPost 函数直接当作普通变量传给 httpGet 函数作为参数），将会减少很多工作量：
 
 ```js
-httpGet('/post/2', renderPost);  // renderPost is called from within httpGet with however many arguments it wants
+httpGet('/post/2', renderPost);  // renderPost 将会在 httpGet 中调用，想要多少参数都行
 ```
 
-Besides the removal of unnecessary functions, we must name and reference arguments. Names are a bit of an issue, you see. We have potential misnomers - especially as the codebase ages and requirements change. Having multiple names for the same concept is a common source of confusion in projects. There is also the issue of generic code. For instance, these two functions do exactly the same thing, but one feels infinitely more general and reusable:
+除了删除不必要的函数，正确地为参数命名也必不可少。当然命名不是什么大问题，但还是有可能存在一些不当的命名，尤其随着代码量的增长以及需求的变更，这种可能性也会增加。项目中常见的一种造成混淆的原因是，针对同一个概念使用不同的命名。还有通用代码的问题。比如，下面这两个函数做的事情一模一样，但是后一个就显得更加通用，可重用性也更高：
 
 ```js
-// specific to our current blog
+// 只针对当前的博客
 var validArticles = function(articles) {
   return articles.filter(function(article){
     return article !== null && article !== undefined;
   });
 };
 
-// vastly more relevant for future projects
+// 对未来的项目友好太多
 var compact = function(xs) {
   return xs.filter(function(x) {
     return x !== null && x !== undefined;
@@ -153,23 +152,23 @@ var compact = function(xs) {
 };
 ```
 
-By naming things, we've seemingly tied ourselves to specific data (in this case `articles`). This happens quite a bit and is a source of much reinvention.
+在命名的时候，我们特别容易把自己限定在特定的数据上（本例中是 `articles`）。这种现象很常见，也是重复造轮子的一大原因。
 
-I must mention that, just like with Object-Oriented code, you must be aware of `this` coming to bite you in the jugular. If an underlying function uses `this` and we call it first class, we are subject to this leaky abstraction's wrath.
+有一点我必须要指出，你一定要非常小心 `this` 值，别让它反咬你一口，这一点与面向对象一致。如果一个底层函数使用了 `this`，而且是以一等公民的方式被调用的，那你就等着 JS 这个蹩脚的抽象概念发怒吧。
 
 ```js
 var fs = require('fs');
 
-// scary
+// 太可怕了
 fs.readFile('freaky_friday.txt', Db.save);
 
-// less so
+// 好一点点
 fs.readFile('freaky_friday.txt', Db.save.bind(Db));
 
 ```
 
-Having been bound to itself, the `Db` is free to access it's prototypical garbage code. I avoid using `this` like a dirty nappy. There's really no need when writing functional code. However, when interfacing with other libraries, you'll have to acquiesce to the mad world around us. Some will argue `this` is necessary for speed. If you are the micro-optimization sort, please close this book. If you cannot get your money back, perhaps you can exchange it for something more novice.
+把 Db 绑定（bind）到它自己身上以后，你就可以随心所欲地运用它的原型链式垃圾代码了。`this` 就像一块脏尿布，我尽可能地避免使用它，因为在函数式编程中根本用不到它。然而，在使用其他的类库时，你却不得不对这个疯狂的世界低头。也有人反驳说 `this` 能提高执行速度。呵呵，如果你也是这类对速度吹毛求疵的人，那你还是合上这本书吧。要是没法退货退款，也许你可以去换一本更入门的书来读。
 
-And with that, we're ready to move on.
+到这里，我们才准备好继续后面的章节。
 
 [Chapter 3: Pure Happiness with Pure Functions](ch3.md)
