@@ -25,7 +25,7 @@
 * [第 1 章: 我们在做什么？](ch1.md)
   * [介绍](ch1.md#介绍)
   * [一个简单例子](ch1.md#一个简单例子)
-* [Chapter 2: 一等公民的函数](ch2.md)
+* [第 2 章: 一等公民的函数](ch2.md)
   * [快速概览](ch2.md#快速概览)
   * [为何钟爱一等公民](ch2.md#为何钟爱一等公民)
 * [Chapter 3: Pure Happiness with Pure Functions](ch3.md)
