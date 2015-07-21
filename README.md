@@ -6,7 +6,7 @@
 
  * 你很有可能在日常工作中使用它
 
-    这让你有机会在实际的编程过程中学以致用，而不是使用一门晦涩的函数式编程语言在一些玩具项目上焦头烂额。
+    这让你有机会在实际的编程过程中学以致用，而不是在空闲时间使用一门晦涩的函数式编程语去做一些玩具性质的项目。
 
  * 你不必从头学起就能开始编写程序
 
@@ -28,8 +28,8 @@
 * [第 2 章: 一等公民的函数](ch2.md)
   * [快速概览](ch2.md#快速概览)
   * [为何钟爱一等公民](ch2.md#为何钟爱一等公民)
-* [Chapter 3: Pure Happiness with Pure Functions](ch3.md)
-  * [Oh to be pure again](ch3.md#oh-to-be-pure-again)
+* [第 3 章: 纯函数的好处](ch3.md)
+  * [再次强调“纯”](ch3.md#再次强调“纯”)
   * [Side effects may include...](ch3.md#side-effects-may-include)
   * [8th grade math](ch3.md#8th-grade-math)
   * [The case for purity](ch3.md#the-case-for-purity)

@@ -171,4 +171,4 @@ fs.readFile('freaky_friday.txt', Db.save.bind(Db));
 
 到这里，我们才准备好继续后面的章节。
 
-[Chapter 3: Pure Happiness with Pure Functions](ch3.md)
+[第 3 章: 纯函数的好处](ch3.md)

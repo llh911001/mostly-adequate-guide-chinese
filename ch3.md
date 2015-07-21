@@ -1,16 +1,16 @@
-# Chapter 3: Pure Happiness with Pure Functions
+# 第 3 章：纯函数的好处
 
-## Oh to be pure again
-One thing we need to get straight is the idea of a pure function.
+## 再次强调“纯”
+我们首先要厘清纯函数的概念。
 
->A pure function is a function that, given the same input, will always return the same output and does not have any observable side effect.
+>纯函数是这样一种函数，即相同的输入，永远会得出相同的输出，而且没有任何可观察的副作用。
 
-Take `slice` and `splice`. They are two functions that do the exact same thing - in a vastly different way, mind you, but the same thing nonetheless. We say `slice` is *pure* because it returns the same output per input every time, guaranteed. `splice`, however, will chew up it's array and spit it back out forever changed which is an observable effect.
+比如 `slice` 和 `splice`，这两个函数的作用并无二致——但是注意，它们各自的方式却大不同，不过无论如何作用还是一样的。我们说 `slice` 更*纯*是因为对相同的输入它保证能返回相同的输出。而 `splice` 却会嚼掉调用它的那个数组，然后再吐出来；这就会产生可观察到的副作用，即这个数组永久地改变了。
 
 ```js
 var xs = [1,2,3,4,5];
 
-// pure
+// 纯的
 xs.slice(0,3);
 //=> [1,2,3]
 
@@ -21,7 +21,7 @@ xs.slice(0,3);
 //=> [1,2,3]
 
 
-// impure
+// 不纯的
 xs.splice(0,3);
 //=> [1,2,3]
 
@@ -32,12 +32,12 @@ xs.splice(0,3);
 //=> []
 ```
 
-In functional programming, we dislike unwieldy functions like `splice` that *mutate* data. This will never do as we're striving for reliable functions that return the same result every time, not functions that leave a mess in their wake like `splice`.
+在函数式编程中，我们讨厌像 `splice` 这样会*改变*数据的笨函数。我们追求的是那种可靠的，每次都能返回同样结果的函数，而不是像 `splice` 这样每次调用都把数据弄的一团糟的函数，这不是我们想要的。
 
-Let's look at another example.
+来看看另一个例子。
 
 ```js
-// impure
+// 不纯的
 var minimum = 21;
 
 var checkAge = function(age) {
@@ -45,8 +45,7 @@ var checkAge = function(age) {
 };
 
 
-
-// pure
+// 纯的
 var checkAge = function(age) {
   var minimum = 21;
   return age >= minimum;
