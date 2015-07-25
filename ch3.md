@@ -52,7 +52,7 @@ var checkAge = function(age) {
 };
 ```
 
-在不纯的版本中，`checkAge` 的结果将取决于 `minimum` 这个可变变量的值。换句话说，它取决于系统状态（system state）；这一点令人沮丧，因为它引入了外部的环境，从而增加了识别成本。这个例子中可能还不是那么明显，但这种依赖于状态的可靠性是影响系统复杂度的最大因素[^http://www.curtclifton.net/storage/papers/MoseleyMarks06a.pdf]。 输入之外的因素能够左右 `checkAge` 的返回值，不仅降低了其纯度，而且每次我们思考整个软件的时候都会痛苦不堪。另一反面，使用纯函数的形式，函数就能做到自给自足。我们也可以让 `minimum` 成为一个不可变（immutable）对象，这样就能保留纯度，因为状态不会有变化。要实现这个效果，我们必须创建一个对象，然后调用 `Object.freeze` 方法：
+在不纯的版本中，`checkAge` 的结果将取决于 `minimum` 这个可变变量的值。换句话说，它取决于系统状态（system state）；这一点令人沮丧，因为它引入了外部的环境，从而增加了识别成本。这个例子中可能还不是那么明显，但这种依赖于状态的可靠性是影响系统复杂度的最大因素[^http://www.curtclifton.net/storage/papers/MoseleyMarks06a.pdf ]。输入之外的因素能够左右 `checkAge` 的返回值，不仅降低了其纯度，而且每次我们思考整个软件的时候都会痛苦不堪。另一反面，使用纯函数的形式，函数就能做到自给自足。我们也可以让 `minimum` 成为一个不可变（immutable）对象，这样就能保留纯度，因为状态不会有变化。要实现这个效果，我们必须创建一个对象，然后调用 `Object.freeze` 方法：
 
 ```js
 var immutableState = Object.freeze({
