@@ -52,7 +52,7 @@ var checkAge = function(age) {
 };
 ```
 
-In the impure portion, `checkAge` depends on the mutable variable `minimum` to determine the result. In other words, it depends on system state which is disappointing because it increases the cognitive load by introducing an external environment. It might not seem like a lot in this example, but this reliance upon state is one of the largest contributors to system complexity[^http://www.curtclifton.net/storage/papers/MoseleyMarks06a.pdf]. This `checkAge` may return different results depending on factors external to input, which not only disqualifies it from being pure, but also puts our minds through the ringer each time we're reasoning about the software. Its pure form, on the other hand, is completely self sufficient. We can  also make `minimum` immutable, which preserves the purity as the state will never change. To do this, we must create an object to freeze.
+在不纯的版本中，`checkAge` 的结果将取决于 `minimum` 这个可变变量的值。换句话说，它取决于系统状态（system state）；这一点令人沮丧，因为它引入了外部的环境，从而增加了识别成本。这个例子中可能还不是那么明显，但这种依赖于状态的可靠性是影响系统复杂度的最大因素［^http://www.curtclifton.net/storage/papers/MoseleyMarks06a.pdf］。输入之外的因素能够左右 `checkAge` 的返回值，不仅降低了其纯度，而且每次我们思考整个软件的时候都会痛苦不堪。另一反面，使用纯函数的形式，函数就能做到自给自足。我们也可以让 `minimum` 成为一个不可变（immutable）对象，这样就能保留纯度，因为状态不会有变化。要实现这个效果，我们必须创建一个对象，然后调用 `Object.freeze` 方法：
 
 ```js
 var immutableState = Object.freeze({
@@ -60,52 +60,52 @@ var immutableState = Object.freeze({
 });
 ```
 
-## Side effects may include...
+## 副作用可能包括...
 
-Let's look more at these "side effects" to improve our intuition. So what is this undoubtedly nefarious *side effect* mentioned in the definition of *pure function*? We'll be referring to *effect* as anything that occurs in our computation besides the calculation of a result. There's nothing intrinsically bad about effects and we'll be using them all over the place in the chapters to come. It's that *side* part that bears the negative connotation. Water alone is not an inherent larvae incubator, it's the *stagnant* part that yields the swarms, and I assure you, *side* effects are a similar breeding ground in your own programs.
+让我们对“副作用”多做一些研究以便加深理解。那么，我们在*纯函数*定义中提到的万分邪恶的*副作用*到底是什么？“作用”我们可以理解为一切除结果计算之外发生的事情；“作用”本身并没什么坏处，而且在本书后面的章节你随处可见它的身影。“副作用”的关键部分在于“副”。就像一潭死水中的“水”本身并不是幼虫的培养器，“死”才是生成虫群的原因。同理，副作用中的“副”是滋生 bug 的温床。
 
->A *side effect* is a change of system state or *observable interaction* with the outside world that occurs during the calculation of a result.
+>*副作用*是在计算结果的过程中，系统状态的一种变化，或者与外部世界进行的*可观察的交互*。
 
-Side effects may include, but are not limited to
+副作用可能包含，但不限于：
 
-  * changing the file system
-  * inserting a record into a database
-  * making an http call
-  * mutations
-  * printing to the screen / logging
-  * obtaining user input
-  * querying the DOM
-  * accessing system state
+  * 更改文件系统
+  * 往数据库插入记录
+  * 发送一个 http 请求
+  * 可变数据
+  * 打印/log
+  * 获取用户输入
+  * DOM 查询
+  * 访问系统状态
 
-And the list goes on and on. Any interaction with the world outside of a function is a side effect, which is a fact that may prompt you to suspect the practicality of programming without them. The philosophy of functional programming postulates that side effects are a primary cause of incorrect behavior. It is not that we're forbidden to use them, rather we want to contain them and run them in a controlled way. We'll learn how to do this when we get to functors and monads in later chapters, but for now, let's try to keep these insidious functions separate from our pure ones.
+这个列表还可以继续写下去。概括来讲，只要是跟函数外部环境发生的交互就都是副作用——这一点可能会让你产生没有副作用就没法编程的疑虑。函数式编程的哲学就是假定副作用是造成不正当行为的主要原因。这并不是说，要禁止一切副作用的产生，而是说，我们试图让它们在可控的范围内发生。后面讲到 functor 和 monad 的时候我们会学习如何控制它们，目前我们还是尽量远离这些阴险的函数。
 
-Side effects disqualify a function from being *pure* and it makes sense: pure functions, by definition, must always return the same output given the same input, which is not possible to guarantee when dealing with matters outside our local function. Let's take a closer look at why we insist on the same output per input. Pop your collars, we're going to look at some 8th grade math.
+副作用让一个函数变得不*纯*是有道理的：从定义上来说，纯函数必须要能够根据相同的输入返回相同的输出；如果函数需要跟外部事物打交道，那么就无法保证这一点了。让我们详细解释下为何要坚持这种「相同输入得到相同输出」原则。注意，我们要复习一些八年级数学知识了。
 
-## 8th grade math
+## 八年级数学
 
-From mathisfun.com:
-> A function is a special relationship between values:
-> Each of its input values gives back exactly one output value.
+根据 mathisfun.com：
+> 函数是不同数值之间的特殊关系：
+> 每接收一个输入值就返回且只返回一个输出值。
 
-In other words, it's just a relation between two values: the input and the output. Though each input has exactly one output, that output doesn't necessary have to be unique per input. Below shows a diagram of a perfectly valid function from `x` to `y`;
+换句话说，函数只是两种数值之间的关系：输入和输出。尽管每个输入都只会有一个输出，不同的输入却可以有相同的输出。下图展示了一个合法的从 `x` 到 `y` 的函数关系；
 
 <img src="images/function-sets.gif" />[^http://www.mathsisfun.com/sets/function.html]
 
-To contrast, the following diagram shows a relation that is *not* a function since the input value `5` points to several outputs:
+相反，下面这张图表展示的就*不是*一种函数关系，因为输入值 `5` 指向了不止一个输出：
 
 <img src="images/relation-not-function.gif" />[^http://www.mathsisfun.com/sets/function.html]
 
-Functions can be described as a set of pairs with the position (input, output): `[(1,2), (3,6), (5,10)]`[^It appears this function doubles it's input].
+函数可以描述为一个集合，这个集合里的内容是 (输入, 输出) 对：`[(1,2), (3,6), (5,10)]`［^看起来这个函数是把输入值加倍］。
 
-Or perhaps a table:
-<table> <tr> <th>Input</th> <th>Output</th> </tr> <tr> <td>1</td> <td>2</td> </tr> <tr> <td>2</td> <td>4</td> </tr> <tr> <td>3</td> <td>6</td> </tr> </table>
+或者一张表：
+<table> <tr> <th>输入</th> <th>输出</th> </tr> <tr> <td>1</td> <td>2</td> </tr> <tr> <td>2</td> <td>4</td> </tr> <tr> <td>3</td> <td>6</td> </tr> </table>
 
-Or even as a graph with `x` as the input and `y` as the output:
+甚至一个以 `x` 为输入 `y` 为输出的函数曲线图：
 
 <img src="images/fn_graph.png" width="300" height="300" />
 
 
-There's no need for implementation details if the input dictates the output. Since functions are simply mappings of input to output, one could simply jot down object literals and run them with `[]` instead of `()`.
+如果输入直接就指明了输出，那么就没有必要再实现具体的细节了。因为函数简单来说就是输入到输出的映射，映射足够直白的话，只写一个对象就能“运行”它，即使用 `[]` 代替 `()`。
 
 ```js
 var toLowerCase = {"A":"a", "B": "b", "C": "c", "D": "d", "E": "e", "D": "d"};
@@ -119,15 +119,15 @@ isPrime[3];
 //=> true
 ```
 
-Of course, you might want to calculate instead of hand writing things out, but this illustrates a different way to think about functions.[^You may be thinking "what about functions with multiple arguments?". Indeed, that presents a bit of an inconvenience when thinking in terms of mathematics. For now, we can bundle them up in an array or just think of the `arguments` object as the input. When we learn about *currying*, we'll see how we can directly model the mathematical definition of a function.]
+当然了，实际情况中你可能需要进行一些计算而不是手动指定各项值；不过上例倒是表明了另外一种思考函数的方式。［^你可能会想“要是函数有多个参数呢？”，的确，这种情况下还依靠手动指定映射在数学上就有点不便了。暂时我们就先把它们一股脑儿都放到数组里，或者把 `arguments` 对象看成是输入；等学习 `curry` 的概念之后，我们就知道如何直接为函数在数学上的定义建模了。］
 
-Here comes the dramatic reveal: Pure functions *are* mathematical functions and they're what functional programming is all about. Programming with these little angels can provide huge benefits. Let's look at some reasons why we're willing to go to great lengths to preserve purity.
+戏剧性的是：纯函数*就是*数学上的函数，而且是函数式编程的全部。使用这些纯函数编程能够带来巨大的好处，让我们解释一下原因，即为何要费如此大的力气保留函数的纯度。
 
-## The case for purity
+## 追求纯度的理由
 
-### Cacheable
+### 可缓存性（Cacheable）
 
-For starters, pure functions can always be cached by input. This is typically done using a technique called memoization:
+首先，纯函数有能力根据输入来做缓存。实现缓存的一种典型方式是 memoize 技术：
 
 ```js
 var squareNumber  = memoize(function(x){ return x*x; });
@@ -135,17 +135,17 @@ var squareNumber  = memoize(function(x){ return x*x; });
 squareNumber(4);
 //=> 16
 
-squareNumber(4); // returns cache for input 4
+squareNumber(4); // 从缓存中读取输入值为 4 的结果
 //=> 16
 
 squareNumber(5);
 //=> 25
 
-squareNumber(5); // returns cache for input 5
+squareNumber(5); // 从缓存中读取输入值为 5 的结果
 //=> 25
 ```
 
-Here is a simplified implementation, though there are plenty of more robust versions available.
+下面的代码是一个简单的实现，尽管有许多比它健壮的多的 `memoize` 库存在。
 
 ```js
 var memoize = function(f) {
@@ -159,7 +159,7 @@ var memoize = function(f) {
 };
 ```
 
-Something to note is that you can transform some impure functions into pure ones by delaying evaluation:
+值得注意的一点是，可以通过延迟执行的方式把不纯的函数转换为纯函数：
 
 ```js
 var pureHttpCall = memoize(function(url, params){
@@ -167,22 +167,22 @@ var pureHttpCall = memoize(function(url, params){
 });
 ```
 
-The interesting thing here is that we don't actually make the http call - we instead return a function that will do so when called. This function is pure because it will always return the same output given the same input: the function that will make the particular http call given the `url` and `params`. Our `memoize` function works just fine, though it doesn't cache the results of the http call, rather it caches the generated function.
+这里有趣的地方在于我们并没有真正发送 http 请求——只是返回了一个函数，当调用它的时候才会发请求。这个函数之所以有资格成为纯函数，是因为它总是会根据相同的输入返回相同的输出：给定了 `url` 和 `params` 之后，它就只会发送同一个 http 请求。我们的 `memoize` 函数工作起来没有任何问题，虽然它缓存的并不是 http 请求所返回的结果，而是生成的函数。
 
-This is not very useful yet, but we'll soon learn some tricks that will make it so. The take away is that we can cache every function no matter how destructive they seem.
+现在来看这种方式意义不大，不过很快我们就会学习一些技巧来发掘它的用处。重点是我们可以缓存任意一个函数，不管它们看起来多么具有破坏性。
 
-### Portable / Self-Documenting
+### 可移植性／自文档化（Portable / Self-Documenting）
 
-Pure functions are completely self contained. Everything the function needs is handed to it on a silver platter. Ponder this for a moment... How might this be beneficial? For starters, a function's dependencies are explicit and therefore easier to see and understand - no funny business going on under the hood.
+纯函数是完全独立的，它需要的所有东西都可轻易获得（译者注：指通过参数传进来）。仔细思考思考这一点...这种完全独立的好处是什么呢？首先，有着明确依赖的函数更易于观察和理解——没有偷偷摸摸的小动作。
 
 ```js
-//impure
+// 不纯的
 var signUp = function(attrs) {
   var user = saveUser(attrs);
   welcomeUser(user);
 };
 
-//pure
+// 纯的
 var signUp = function(Db, Email, attrs) {
   return function() {
     var user = saveUser(Db, attrs);
@@ -191,19 +191,19 @@ var signUp = function(Db, Email, attrs) {
 };
 ```
 
-The example here demonstrates that the pure function must be honest about it's dependencies and, as such, tell us exactly what it's up to. Just from it's signature, we know that it will use a `Db`, `Email`, and `attrs` which should be telling to say the least. We'll learn how to make functions like this pure without merely deferring evaluation, but the point should be clear that the pure form is much more informative than it's sneaky impure counterpart which is up to God knows what.
+这个例子表明，纯函数对于其依赖必须要诚实，这样我们就能知道它的目的。仅从纯函数版本的 `signUp` 的定义就可以看出，它将要用到 `Db`、`Email` 和 `attrs`，这在最小程度上给了我们足够的信息。后面我们会学习如何不通过这种延迟执行的方式来让一个函数变纯，不过这里的要点应该很清楚，那就是相比不纯的函数，纯函数能够提供多得多的信息；前者天知道它们暗地里都干了些什么。
 
-Something else to notice is that we're forced to "inject" dependencies, or pass them in as arguments, which makes our app much more flexible because we've parameterized our database or mail client or what have you[^Don't worry, we'll see a way to make this less tedious than it sounds]. Should we choose to use a different Db we need only to call our function with it. Should we find ourselves writing a new application in which we'd like to reuse this reliable function, we simply give this function whatever `Db` and `Email` we have at the time.
+其次，通过强迫“注入”依赖，或者把它们当作参数传递，我们的应用也更加灵活；因为数据库或者邮件客户端或者任何你需要的东西都参数化了［^别担心，我们有办法让这一步不那么单调乏味］。如果要使用另一个 `Db`，只需把它传给函数就行了。如果想在一个新应用中使用这个可靠的函数，尽管把新应用中有的 `Db` 和 `Email` 传递过去就好了，非常简单。
 
-In a JavaScript setting, portability could mean serializing and sending functions over a socket. It could mean running all our app code in web workers. Portability is a powerful trait.
+在 JavaScript 的设定中，可移植性意味着可以把函数序列化（serializing）并通过 socket 发送。这也意味着我们的代码可以在 web workers 中运行。这是一个非常强大的特性。
 
-Contrary to "typical" methods and procedures in imperative programming which are rooted deep in their environment via state, dependencies, and available effects, pure functions can be run anywhere our hearts desire. When was the last time you copied a method into a new app? One of my favorite quotes comes from Erlang creator, Joe Armstrong: "The problem with object-oriented languages is they’ve got all this implicit environment that they carry around with them. You wanted a banana but what you got was a gorilla holding the banana...and the entire jungle".
+命令式编程中“典型”的方法和过程都深深地根植于它们所在的环境中，通过状态、依赖和可用影响（available effects）达成；纯函数与此相反，它与环境无关，只要我们愿意，可以在任何地方运行它。我最喜欢的名言之一是 Erlang 语言作者 Joe Armstrong 说的这句话：“面向对象语言的问题是，它们把永远都要随身携带那些隐式的环境。你只需要一个香蕉，但是你得到的是一个拿着香蕉的大猩猩...以及整个丛林”。
 
-### Testable
-Next, we come to realize pure functions make testing much easier. We don't have to mock a "real" payment gateway or setup and assert the state of the world after each test. We simply give it input and assert output. In fact, we find the functional community pioneering new test tools that can blast our functions with generated input and assert that properties hold on the output. It's beyond the scope of this book, but I strongly encourage you to search for and try *Quickcheck* - a testing tool that is tailored for  a purely functional environment.
+### 可测试性（Testable）
+第三点，我们发现纯函数让测试更加容易。我们不需要伪造一个“真实的”支付网关，或者每一次测试之前都要配置、之后都要断言状态（assert the state）。我们只是简单地给函数一个输入，然后断言输出就好了。事实上，我们发现社区正在开创一些新的测试工具，能够帮助我们自动生成输入并断言输出。这超出了本书范畴，但是我强烈推荐你去试试 *Quickcheck*——一个为函数式环境量身定制的测试工具。
 
-### Reasonable
-Many believe the biggest win when working with pure functions is *referential transparency*. A spot of code is referentially transparent when it can be substituted for its evaluated value without changing the behavior of the program. Since pure functions always return the same output given the same input, we can rely on them to always return the same results and thus preserve referential transparency. Let's see an example.
+### 合理性（Reasonable）
+很多人相信使用纯函数最大的好处是*引用透明性*（referential transparency）。如果一段代码可以被它执行所得的结果替换，而且是在不改变整个程序行为的情况下，那么我们就说这段代码是引用透明的。由于纯函数总是能够根据相同输入返回相同输出，所以它们能够保证总是返回同一个结果，这也就保证了引用透明性。我们看一个例子。
 
 ```js
 
@@ -230,9 +230,9 @@ Many believe the biggest win when working with pure functions is *referential tr
   //=> Immutable.Map({name:"Michael", hp:19, team: "green"})
 ```
 
-`decrementHP`, `isSameTeam` and `punch` are all pure and therefore referentially transparent. We can use a technique called *equational reasoning* wherein one substitutes "equals for equals" to reason about code. It's a bit like manually evaluating the code without taking into account the quirks of programmatic evaluation. Using referential transparency, let's play with this code a bit.
+`decrementHP`、`isSameTeam` 和 `punch` 都是纯函数，因此是引用透明的。我们可以使用一种叫做“等式推导”的技术来分析代码。所谓“等式推导”就是“一对一”替换，有点像不考虑整个程序的执行情况，仅仅手动执行相关的代码。让我们使用引用透明性来剖析下这段代码。
 
-First we'll inline the function `isSameTeam`.
+我们首先把 `isSameTeam` 函数写在行内：
 
 ```js
   var punch = function(player, target) {
@@ -245,6 +245,7 @@ First we'll inline the function `isSameTeam`.
 ```
 
 Since our data is immutable, we can simply replace the teams with their actual value
+因为式不可变数据，我们可以直接把 `team` 替换为真值：
 
 ```js
   var punch = function(player, target) {
@@ -256,7 +257,7 @@ Since our data is immutable, we can simply replace the teams with their actual v
   };
 ```
 
-We see that it is false in this case so we can remove the entire if branch
+`if` 语句执行结果为 `false`，所以我们可以把整个 `if` 语句都删掉：
 
 ```js
   var punch = function(player, target) {
@@ -265,7 +266,7 @@ We see that it is false in this case so we can remove the entire if branch
 
 ```
 
-And if we inline `decrementHP`, we see that, in this case, punch becomes a call to decrement the `hp` by 1.
+如果再把 `decrementHP` 写到行内，我们发现这种情况下，`punch` 变成了一个让 `hp` 的值减 1 的调用：
 
 ```js
   var punch = function(player, target) {
@@ -273,15 +274,14 @@ And if we inline `decrementHP`, we see that, in this case, punch becomes a call 
   };
 ```
 
-This ability to reason about code is terrific for refactoring and understanding code in general. In fact, we used this technique to refactor our flock of seagulls program. We used equational reasoning to harness the properties of addition and multiplication. Indeed, we'll be using these techniques throughout the book.
+一般而言，等式推导带来的分析代码的能力对重构和理解代码非常重要。事实上，我们重构海鸥程序使用的正是这项技术：利用加和乘的属性。而且这些技术的使用将贯穿本书，真的。
 
-### Parallel Code
-Finally, and here's the coup de grace, we can run any pure function in parallel since it does not need access to shared memory and it cannot, by definition, have a race condition due to some side effect. This is very much possible in a server side js environment with threads as well as in the browser with web workers though current culture seems to avoid it due to complexity when dealing with impure functions.
+### 并行代码
+最后一点，也是最强大的一点：我们可以并行运行任意纯函数。因为纯函数根本不需要访问共享的内存，而且根据其定义，纯函数也不会由于副作用而进入竞争态（race condition）。对服务端的 js 环境以及使用了 web worker 的浏览器来说，并行运行代码是非常容易实现的，因为它们使用了线程（thread）。不过出于对非纯函数复杂度的考虑，当前主流的看法还是避免使用并行。
 
+## 总结
+我们已经了解什么是纯函数了，也看到作为函数式程序员，为何深信纯函数像猫的晚礼服一样优雅（*Needs review:* cat's evening wear）。从这开始，我们将尽力以纯函数式的方式书写所有的函数。我们将需要一些额外的工具来达成这个目标，同时也尽量把非纯函数从纯函数代码中剥离。
 
-## In Summary
-We've seen what pure functions are and why we, as functional programmers, believe they are the cat's evening wear. From this point on, we'll strive to write all our functions in a pure way. We'll require some extra tools to help us do so, but in the meantime, we'll try to separate the impure functions from the rest of the pure code.
+如果手头没有一些工具，那么纯函数程序写起来最起码就有些费力。我们不得不玩杂耍似的通过到处传递参数来操作数据，我们还被禁止使用状态，更别说副作用了。没有人愿意这样自虐。所以我们要学习一个叫 curry 的新工具。
 
-Writing programs with pure functions is a tad laborious, to say the least, without some extra tools in our belt. We have to juggle data by passing arguments all over the place, we're forbidden to use state, not to mention effects. How does one go about writing these masochistic programs? Let's acquire a new tool called curry.
-
-[Chapter 4: Currying](ch4.md)
+[第 4 章: Currying](ch4.md)
