@@ -232,7 +232,7 @@ var signUp = function(Db, Email, attrs) {
 
 `decrementHP`、`isSameTeam` 和 `punch` 都是纯函数，因此是引用透明的。我们可以使用一种叫做“等式推导”的技术来分析代码。所谓“等式推导”就是“一对一”替换，有点像不考虑整个程序的执行情况，仅仅手动执行相关的代码。让我们使用引用透明性来剖析下这段代码。
 
-我们首先把 `isSameTeam` 函数写在行内：
+我们首先内联 `isSameTeam` 函数：
 
 ```js
   var punch = function(player, target) {
@@ -266,7 +266,7 @@ Since our data is immutable, we can simply replace the teams with their actual v
 
 ```
 
-如果再把 `decrementHP` 写到行内，我们发现这种情况下，`punch` 变成了一个让 `hp` 的值减 1 的调用：
+如果再内联 `decrementHP`，我们发现这种情况下，`punch` 变成了一个让 `hp` 的值减 1 的调用：
 
 ```js
   var punch = function(player, target) {

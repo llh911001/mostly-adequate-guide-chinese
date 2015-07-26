@@ -1,11 +1,11 @@
-# Chapter 4: Currying
+# 第 4 章: 柯里化（currying）
 
-## Can't live if livin' is without you
-My Dad once explained how there are certain things one can live without until one acquires them. A microwave is one such thing. Smart phones, another. The older folks among us will remember a fulfilling life sans internet. For me, currying is among this list.
+## 没你就活不下去
+我父亲有次跟我解释了为何有些事物在你得到它之前是无足轻重的，得到之后就不可或缺。微波炉是这样，智能手机是这样，互联网也是这样——老人们在没有互联网的时候过得也很充实。对我来说，函数的柯里化（currying）也是这样。
 
-The concept is simple: You can call a function with fewer arguments than it expects. What is returned is a function that takes the remaining arguments.
+curry 的概念很简单：只传递给函数一部分参数来调用它，让它返回的那个函数去处理剩下的参数。
 
-You can choose to call it all at once or simply feed in each argument piecemeal.
+你可以一次性地调用 curry 函数，也可以每次只传一个参数分多次调用。
 
 ```js
 var add = function(x) {
@@ -24,9 +24,9 @@ addTen(2);
 // 12
 ```
 
-Here we've made a function `add` that will take one argument and return a function. By calling it, the returned function remembers the first argument from then on via the closure. Calling it all at once is a bit of a pain, however, so we can use a special helper function called `curry` to make defining and calling functions like this easier.
+这里我们定义了一个 `add` 函数，它接受一个参数并返回一个新的函数。调用 `add` 之后，返回的函数就通过闭包的方式记住了 `add` 的第一个参数。一次性地调用它实在是有点繁琐，不过我们可以使用一个特殊的 `curry` 帮助函数（helper function）使这类函数的定义和调用更容易。
 
-Let's setup a few curried functions for our enjoyment.
+我们来创建一些 curry 函数享受下。
 
 ```js
 var curry = require('lodash').curry;
@@ -48,7 +48,7 @@ var map = curry(function(f, xs) {
 });
 ```
 
-The pattern I've followed is a simple, but important one. I've strategically positioned the data we're operating on (String, Array) as the last argument. It will become clear as to why upon use.
+我在上面的代码中遵循的是一种简单，同时也非常重要模式。即策略性地把我们要操作的数据（String， Array）放到最后一个参数里。到使用它们的时候你就明白这样做的原因是什么了。
 
 ```js
 match(/\s+/g, "hello world");
@@ -85,14 +85,15 @@ censored("Chocolate Rain");
 // 'Ch*c*l*t* R**n'
 ```
 
-What's being demonstrated here is the ability to "pre-load" a function with an argument or two in order to receive a new function that remembers those arguments.
+这里表明的是一种“预加载”函数的能力，通过传递一到两个参数得到一个记住了这些参数的新函数。
 
-I encourage you to `npm install lodash`, copy the code above and have a go at it in the repl. You can also do this in a browser where lodash or ramda is available.
+我鼓励你使用 `npm install lodash` 安装 `lodash`，复制上面的代码放到 repl 里跑一跑。当然你也可以在能够使用 `lodash` 或 `ramda` 的网页中运行它们。
 
-## More than a pun / special sauce
-Currying is useful for many things. We can make new functions just by giving them some arguments as seen in `hasSpaces`, `findSpaces`, and `censored`.
+## 不仅仅是双关语／特殊的酱料
 
-We also have the ability to transform any function that works on single elements in to a function that works on arrays simply by wrapping it with `map`:
+curry 的用处非常广泛，就像在 `hasSpaces`、`findSpaces` 和 `censored` 看到的一样，我们传给函数一些参数，然后得到一个新函数。
+
+我们也可以用 `map` 简单地把接受单个元素为参数的函数包裹一下，然后就能把它转换为接受数组为参数的函数。
 
 ```js
 var getChildren = function(x) {
@@ -102,7 +103,7 @@ var getChildren = function(x) {
 var allTheChildren = map(getChildren);
 ```
 
-Giving a function fewer arguments than it expects is typically called *partial application*. Partially applying a function can remove a lot of boiler plate code. Consider what the above `allTheChildren` function would be with the uncurried `map` from lodash[^note the arguments are in a different order]:
+只传给函数一部分参数通常也叫做 *partial application*，能够大量减少样板文件代码（boilerplate code）。考虑上面这个 `allTheChildren` 函数，如果用 lodash 的普通 `map` 来写会是什么样的[^注意参数的顺序也变了]：
 
 ```js
 var allTheChildren = function(elements) {
@@ -110,73 +111,73 @@ var allTheChildren = function(elements) {
 };
 ```
 
-We typically don't define functions that work on arrays, because we can just call `map(getChildren)` inline. Same with `sort`, `filter`, and other higher order functions[^Higher order function: A function that takes or returns a function].
+通常我们不定义直接操作数组的函数，因为只需内联调用 `map(getChildren)` 就能达到目的。这一点同样适用于 `sort`、`filter` 以及其他的高阶函数（higher order function）[^高阶函数：参数或返回值为函数的函数]。
 
-When we spoke about *pure functions*, we said they take 1 input to 1 output. Currying does exactly this: each single argument returns a new function expecting the remaining arguments. That, old sport, is 1 input to 1 output. No matter if the output is another function - it qualifies as pure. We do allow more than one argument at a time, but this is seen as merely removing the extra `()`'s for convenience.
+当我们谈论*纯函数*的时候，我们说它们接受一个输入返回一个输出。curry 所做的正是这样：传递单个参数调用函数，返回一个新函数处理剩余参数。这就是一个输入对应一个输出啊老伙计。哪怕这个输出是另一个函数，它也符合上述原则。当然 curry 函数也允许一次传递多个参数，但这只是出于减少 `()` 的方便。
 
+## 总结
 
-## In summary
+curry 函数用起来非常得心应手，每天使用它对我来说简直就是一种享受；它堪称手头必备工具，能够让函数式编程不那么繁琐和沉闷。通过简单地传递几个参数，我们就能动态创建实用的新函数；而且这还带了一个额外好处，那就是保留了数学的函数定义，尽管参数不止一个。
 
-Currying is handy and I very much enjoy working with curried functions on a daily basis. It is one tool for the belt that makes functional programming less verbose and tedious. We can make new, useful functions on the fly simply by passing in a few arguments and as a bonus, we've retained the mathematical function definition despite multiple arguments.
+下一章我们将学习另一个重要的工具：`组合`（compose）。
 
-Let's acquire another essential tool called `compose`.
+[第 5 章: 代码组合](ch5.md)
 
-[Chapter 5: Coding by Composing](ch5.md)
-
-## Exercises
+## 练习
 
 ```js
 var _ = require('ramda');
 
 
-// Exercise 1
+// 练习 1
 //==============
-// Refactor to remove all arguments by partially applying the function
+// 重构使之成为一个 curry 函数
 
 var words = function(str) {
   return split(' ', str);
 };
 
-// Exercise 1a
+// 练习 1a
 //==============
-// Use map to make a new words fn that works on an array of strings.
+// 使用 `map` 创建一个新函数，使之能够操作字符串数组
 
 var sentences = undefined;
 
 
-// Exercise 2
+// 练习 2
 //==============
-// Refactor to remove all arguments by partially applying the functions
+// 重构使之成为一个 curry 函数
 
 var filterQs = function(xs) {
   return filter(function(x){ return match(/q/i, x);  }, xs);
 };
 
 
-// Exercise 3
+// 练习 3
 //==============
-// Use the helper function _keepHighest to refactor max to not reference any arguments
+// 使用帮助函数 `_keepHighest` 重构 `max` 使之成为 curry 函数
 
-// LEAVE BE:
+// 无须改动:
 var _keepHighest = function(x,y){ return x >= y ? x : y; };
 
-// REFACTOR THIS ONE:
+// 重构这段代码:
 var max = function(xs) {
   return reduce(function(acc, x){
     return _keepHighest(acc, x);
   }, 0, xs);
 };
 
-  
-// Bonus 1:
+
+// 彩蛋 1:
 // ============
 // wrap array's slice to be functional and curried.
+// 包裹数组的 `slice` 函数使之成为 curry 函数
 // //[1,2,3].slice(0, 2)
 var slice = undefined;
 
 
-// Bonus 2:
+// 彩蛋 2:
 // ============
-// use slice to define a function "take" that takes n elements. Make it curried
+// 借助 `slice` 定义一个 `take` curry 函数，接受 n 个元素为参数。
 var take = undefined;
 ```
