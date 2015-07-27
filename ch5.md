@@ -1,8 +1,8 @@
-# Chapter 5: Coding by Composing
+# 第 5 章: 代码组合
 
-## Functional husbandry
+## 函数饲养
 
-Here's `compose`:
+这就是 `组合`（compose，以下将称之为组合）：
 
 ```js
 var compose = function(f,g) {
@@ -12,9 +12,9 @@ var compose = function(f,g) {
 };
 ```
 
-`f` and `g` are functions and `x` is the value being "piped" through them.
+`f` 和 `g` 都是函数，`x` 是在它们之间通过“管道”传输的值。
 
-Composition feels like function husbandry. You, breeder of functions, select two with traits you'd like to combine and mash them together to spawn a brand new one. Usage is as follows:
+`组合`看起来像是在饲养函数。你就是饲养员，选择两个有特点又遭你喜欢的函数，让它们结合，产下一个崭新的函数。组合的用法如下：
 
 ```js
 var toUpperCase = function(x) { return x.toUpperCase(); };
@@ -25,9 +25,9 @@ shout("send in the clowns");
 //=> "SEND IN THE CLOWNS!"
 ```
 
-The composition of two functions returns a new function. This makes perfect sense: composing two units of some type (in this case function) should yield a new unit of that very type. You don't plug two legos together and get a lincoln log. There is a theory here, some underlying law that we will discover in due time.
+两个函数组合之后返回了一个新函数是完全讲得通的：组合某种类型（本例中是函数）的两个元素本就该生成一个该类型的新元素。把两个乐高积木组合起来绝不可能得到一个林肯积木。所以这是有道理的，我们将在适当的时候探讨这方面的一些底层理论。
 
-In our definition of `compose`, the `g` will run before the `f`, creating a right to left flow of data. This is much more readable than nesting a bunch of function calls. Without compose, the above would read:
+我们在定义 `compose` 的时候，创建了一个从右到左的数据流，所以 `g` 将先于 `f` 执行。这样做的可读性远远高于嵌套一大堆的函数调用，如果不用组合，`shout` 函数将会是这样的：
 
 ```js
 var shout = function(x){
@@ -35,7 +35,7 @@ var shout = function(x){
 };
 ```
 
-Instead of inside to outside, we run right to left, which I suppose is a step in the left direction[^boo]. Let's look at an example where sequence matters:
+让代码从右向左运行，而不是由内而外运行，我觉得可以称之为“左倾”[^吁——]。我们来看一个顺序很重要的例子：
 
 ```js
 var head = function(x) { return x[0]; };
@@ -46,27 +46,28 @@ last(['jumpkick', 'roundhouse', 'uppercut']);
 //=> 'uppercut'
 ```
 
-`reverse` will turn the list around while `head` grabs the initial item. This results in an effective, albeit inefficient, `last` function. The sequence of functions in the composition should be apparent here. We could define a left to right version, however, we mirror the mathematical version much more closely as it stands. That's right, composition is straight from the math books. In fact, perhaps it's time to look at a property that holds for any composition.
+`reverse` 反转列表，`head` 取列表中的第一个元素；所以结果就是得到了一个可用的 `last` 函数，虽然它性能不高。这个组合中函数的执行顺序应该是显而易见的。尽管我们可以定义一个从左向右的版本，但是从右向左执行更加能够反映数学上的含义——是的，组合的概念直接来自于数学课本。实际上，现在是时候去看看所有的组合都有的一个特性了。
 
 ```js
-// associativity
+// 结合律（associativity）
 var associative = compose(f, compose(g, h)) == compose(compose(f, g), h);
 // true
 ```
 
-Composition is associative, meaning it doesn't matter how you group two of them. So, should we choose to uppercase the string, we can write:
+这个特性就是结合律，符合结合律意味着不管你是把 `g` 和 `h` 分到一组，还是把 `f` 和 `g` 分到一组都不重要。所以，如果我们想把字符串变为大写，可以这么写：
 
 ```js
 compose(toUpperCase, compose(head, reverse));
 
-// or
+// 或者
 compose(compose(toUpperCase, head), reverse);
 ```
 
-Since it doesn't matter how we group our calls to `compose`, the result will be the same. That allows use to write a variadic compose and use it as follows:
+因为如何为 `compose` 的调用分组不重要，所以结果都是一样的。这也让我们有能力写一个可变的组合（variadic compose），用法如下：
 
 ```js
-// previously we'd have to write two composes, but since it's associative, we can give compose as many fn's as we like and let it decide how to group them.
+// 前面的例子中我们必须要写两个组合才行，但既然组合是符合结合律的，我们就可以只写一个，而且想传给它多少个函数就传给它多少个，然后让它自己决定如何分组。
+
 var lastUpper = compose(toUpperCase, head, reverse);
 
 lastUpper(['jumpkick', 'roundhouse', 'uppercut']);
@@ -79,79 +80,79 @@ loudLastUpper(['jumpkick', 'roundhouse', 'uppercut']);
 //=> 'UPPERCUT!'
 ```
 
-Applying the associative property gives us this flexibility and peace of mind that the result will be equivalent. The slightly more complicated variadic definition is included with the support libraries for this book and is the normal definition you'll find in libraries like [lodash][lodash-website], [underscore][underscore-website], and [ramda][ramda-website].
+应用结合律能为我们带来强大的灵活性，还有对执行结果不会出现意外的那种平和心态。至于稍微复杂些的可变组合，也都包含在本书的 `support` 库里了，而且你也可以在类似 [lodash][lodash-website]、[underscore][underscore-website] 以及 [ramda][ramda-website] 这样的类库中找到它们的常规定义。
 
-One pleasant benefit of associativity is that any group of functions can be extracted and bundled together in their very own composition. Let's play with refactoring our previous example:
+结合律的一大好处是任何一个函数分组都可以被拆开来，然后再以它们自己的组合方式打包在一起。让我们来重构重构前面的例子。
 
 ```js
 var loudLastUpper = compose(exclaim, toUpperCase, head, reverse);
 
-// or
+// 或
 var last = compose(head, reverse);
 var loudLastUpper = compose(exclaim, toUpperCase, last);
 
-// or
+// 或
 var last = compose(head, reverse);
 var angry = compose(exclaim, toUpperCase);
 var loudLastUpper = compose(angry, last);
 
-// more variations...
+// 更多变种...
 ```
 
-There's no right or wrong answers - we're just plugging our legos together in whatever way we please. Usually it's best to group things in an reusable way like `last` and `angry`. If familiar with Fowler's "[Refactoring][refactoring-book]", one might recognize this process as "[extract method][extract-method-refactor]"...except without all the object state to worry about.
+关于如何组合，并没有标准的答案——我们只是以自己喜欢的方式搭乐高积木罢了。通常来说，最佳实践是让你的组合可重用，就像 `last` 和 `angry` 那样。如果熟悉 Fowler 的《[重构][refactoring-book]》一书的话，你可能会认识到这个过程叫做 “[extract method][extract-method-refactor]”——只不过不需要关心对象的状态。
 
-## Pointfree
+## pointfree
 
-Pointfree style means never having to say your data. Excuse me. It means functions that never mention the data upon which they operate. First class functions, currying, and composition all play well together to create this style.
+pointfree 模式指的是，永远不必指明数据——恕我直言。它的意思是说，函数无须提及将要操作的数据是什么样的。一等函数、柯里化以及组合都非常有助于实现这种模式。
 
 ```js
-//not pointfree because we mention the data: word
+// 非 pointfree，因为提到了数据：word
 var snakeCase = function (word) {
   return word.toLowerCase().replace(/\s+/ig, '_');
 };
 
-//pointfree
+// pointfree
 var snakeCase = compose(replace(/\s+/ig, '_'), toLowerCase);
 ```
 
-See how we partially applied `replace`? What we're doing is piping our data through each function of 1 argument. Currying allows us to prepare each function to just take it's data, operate on it, and pass it along. Something else to notice is how we don't need the data to construct our function in the pointfree version, whereas in the pointful one, we must have our `word` available before anything else.
+看到 `replace` 是如何被局部调用的了么？我们这里所做的事情就是通过管道把数据在接受单个参数的函数间传递。利用 curry，我们能够做到让每个函数都先接收数据，然后操作数据，最后再把数据传递到下一个函数那里去。另外注意在 pointfree 版本中，我们是如何在没有 `word` 参数的情况下构造函数的；而在非 pointfree 的版本中，必须要有 `word` 才能进行进行一切操作。
 
-Let's look at another example.
+我们再来看一个例子。
 
 ```js
-//not pointfree because we mention the data: name
+// 非 pointfree，因为提到了数据：name
 var initials = function (name) {
   return name.split(' ').map(compose(toUpperCase, head)).join('. ');
 };
 
-//pointfree
+// pointfree
 var initials = compose(join('. '), map(compose(toUpperCase, head)), split(' '));
 
 initials("hunter stockton thompson");
 // 'H. S. T'
 ```
 
-Pointfree code can again, help us remove needless names and keep us concise and generic. Pointfree is a good litmus test for functional code as it let's us know we've got small functions that take input to output. One can't compose a while loop, for instance. Be warned, however, pointfree is a double edge sword and can sometimes obfuscate intention. Not all functional code is pointfree and that is O.K. We'll shoot for it where we can and stick with normal functions otherwise.
+pointfree 模式能够进一步帮助我们减少不必要的命名，让代码保持简洁和通用。对函数式代码来说，pointfree 是非常好的石蕊试验，因为它能告诉我们哪些是接收输入返回输出的小函数。比如，while 循环是不能组合的。pointfree 是一把双刃剑，有时候也能混淆视听，所以你在使用它的时候要警惕。并非所有的函数式代码都是 pointfree 的，不过这没关系。可以使用它的时候就使用，不能使用的时候就用普通函数。
 
-## Debugging
-A common mistake is to compose something like `map`, a function of two arguments, without first partially applying it.
+## debug
+组合的一个常见错误是，在没有局部调用之前，就组合类似 `map` 这样接受两个参数的函数。
 
 ```js
-//wrong - we end up giving angry an array and we partially applied map with god knows what.
+// 错误做法：我们传给了 `angry` 一个数组，根本不知道最后传给 `map` 的是什么东西。
 var latin = compose(map, angry, reverse);
 
 latin(["frog", "eyes"]);
 // error
 
 
-// right - each function expects 1 argument.
+// 正确做法：每个函数都得到了一个实际参数。
 var latin = compose(map(angry), reverse);
 
 latin(["frog", "eyes"]);
 // ["SEYE!", "GORF!"])
 ```
 
-If you are having trouble debugging a composition, we can use this helpful, but impure trace function to see what's going on.
+如果在 debug 组合的时候遇到了困难，那么可以使用下面这个实用的，但是不纯的 `trace` 函数来追踪代码执行情况。
 
 ```js
 var trace = curry(function(tag, x){
@@ -165,14 +166,14 @@ dasherize('the world is a vampire');
 // TypeError: Object the,world,is,a,vampire has no method 'replace'
 ```
 
-Something is wrong here, let's `trace`
+这里报错了，我们 `trace` 下：
 
 ```js
 var dasherize = compose(join('-'), replace(/\s{2,}/ig, ' '), trace("after split"), split(' '));
 // after split [ 'the', 'world', 'is', 'a', 'vampire' ]
 ```
 
-Ah! We need to `map` this `replace` since it's working on an array.
+啊！`replace` 的参数是一个数组，所以我们需要先用 `map` 调用一下它。
 
 ```js
 var dasherize = compose(join('-'), map(replace(/\s{2,}/ig, ' ')), split(' '));
@@ -182,44 +183,43 @@ dasherize('the world is a vampire');
 // 'the-world-is-a-vampire'
 ```
 
-The `trace` function allows us to view the data at a certain point for debugging purposes. Languages like haskell and purescript have similar functions for ease of development.
+`trace` 函数允许我们在某个特定的点观察数据以便 debug。像 haskell 和 purescript 这样的语言出于开发的方便，也都提供了类似的函数。
 
-Composition will be our tool for constructing programs and, as luck would have it, is backed by a powerful theory that ensures things will work out for us. Let's examine this theory.
+组合将成为我们构造参数的工具，而且幸运的是，它背后是有一个强大的理论做支撑的。让我们来研究研究这个理论。
 
+## 范畴论（Category theory）
 
-## Category theory
-
-Category theory is an abstract branch of mathematics that can formalize concepts from several different branches such as set theory, type theory, group theory, logic, and more. It primarily deals with objects, morphisms, and transformations, which mirrors programming quite closely. Here is a chart of the same concepts as viewed from each separate theory.
+范畴学是数学中的一个抽象分支，能够形式化诸如集合论（set theory）、类型论（type theory）、群论（group theory）以及逻辑学（logic）等分支中的一些概念。范畴学主要处理对象（object）、态射（morphism）和变化式（transformation），而这些概念跟编程的联系非常紧密。下图是一些相同的概念分别在不同理论下的形式：
 
 <img src="images/cat_theory.png" />
 
-Sorry, I didn't mean to frighten you. I don't expect you to be intimately familiar with all these concepts. My point is to show you how much duplication we have so you can see why category theory aims to unify these things.
+抱歉，我没有任何要吓唬你的意思。我并不假设你对这些概念都了如指掌，我只是想让你明白这里面有多少重复的内容，让你知道为何范畴论要统一这些概念。
 
-In category theory, we have something called... a category. It is defined as a collection with the following components:
+在范畴论中，有一个概念叫做...范畴。有着以下这些组件（component）的搜集（collection）就构成了一个范畴：
 
-  * A collection of objects
-  * A collection of morphisms
-  * A notion of composition on the morphisms
-  * A distinguished morphism called identity
+  * 对象的搜集
+  * 态射的搜集
+  * 态射的组合
+  * identity 这个独特的态射
 
-Category theory is abstract enough to model many things, but let's apply this to types and functions, which is what we care about at the moment.
+范畴论抽象到足以模拟任何事物，不过目前我们最关心的还是类型和函数，所以让我们把范畴论应用到它们身上看看。
 
-**A collection of objects**
-The objects will be data types. For instance, ``String``, ``Boolean``, ``Number``, ``Object``, etc. We often view data types as sets of all the possible values. One could look at ``Boolean`` as the set of `[true, false]` and ``Number`` as the set of all possible numeric values. Treating types as sets is useful because we can use set theory to work with them. 
+**对象的搜集**
 
+对象就是数据类型，例如 `String`、`Boolean`、`Number` 和 `Object` 等等。通常我们把数据类型视作所有可能的值的一个集合（set）。像 `Boolean` 就可以看作是 `[true, false]` 的集合，`Number` 可以是所有实数的一个集合。把类型当作集合对待是有好处的，因为我们可以利用集合论（set theory）处理类型。
 
-**A collection of morphisms**
-The morphisms will be our standard every day pure functions.
+**态射的搜集**
+态射是标准的，普通的纯函数。
 
-**A notion of composition on the morphisms**
-This, as you may have guessed, is our brand new toy - `compose`. We've discussed that our `compose` function is associative which is no coincidence as it is a property that must hold for any composition in category theory.
+**态射的组合**
+你可能猜到了，这就是本章介绍的新玩意儿——`组合`。我们已经讨论过 `compose` 函数是符合结合律的，而这并非巧合，结合律是在范畴论中对任何组合都适用的一个特性。
 
-Here is an image demonstrating composition:
+这张图展示了什么是组合：
 
 <img src="images/cat_comp1.png" />
 <img src="images/cat_comp2.png" />
 
-Here is a concrete example in code:
+这里有一个具体的例子：
 
 ```js
 var g = function(x){ return x.length; };
@@ -227,16 +227,16 @@ var f = function(x){ return x === 4; };
 var isFourLetterWord = compose(f, g);
 ```
 
-**A distinguished morphism called identity**
-Let's introduce a useful function called `id`. This function simply takes some input and spits it back at you. Take a look:
+**identity 这个独特的态射**
+让我们介绍一个名为 `id` 的实用函数。这个函数接收随便什么输入然后原封不动地返回它：
 
 ```js
 var id = function(x){ return x; };
 ```
 
-You might ask yourself "What in the bloody hell is that useful for?". We'll make extensive use of this function in the following chapters, but for now think of it as a function that can stand in for our value - a function masquerading as every day data.
+可能你会问“这他妈哪里有用了？”。别急，我们会在随后的章节中扩展应用这个函数的，暂时先把它当作一个可以替代给定值的函数——一个假装自己是普通数据的函数。
 
-`id` must play nicely with compose. Here is a property that always holds for every unary[^unary: a one argument function] function f:
+`id` 函数在组合的时候一定要小心。下面这个特性对所有的一元函数（unary function）[^一元函数：只接受一个参数的函数] `f` 都适用：
 
 ```js
 // identity
@@ -244,30 +244,29 @@ var identity = compose(id, f) == compose(f, id) == f;
 // true
 ```
 
-Hey, it's just like the identity property on numbers! If that's not immediately clear, take some time with it. Understand the futility. We'll be seeing `id` used all over the place soon, but for now we see it's a function that acts as a stand in for a given value. This is quite useful when writing pointfree code.
+嘿，这就像是 `Number` 的 `identity` 属性嘛！如果这还不够清楚直白，别着急，试着理解这个函数的无所作为。很快我们就会到处使用 `id` 了，不过暂时我们还是把当作一个替代给定值的函数。这对写 pointfree 的代码非常有用。
 
-So there you have it, a category of types and functions. If this is your first introduction, I imagine you're still a little fuzzy on what a category is and why it's useful. We will build upon this knowledge throughout the book. As of right now, in this chapter, on this line, you can at least see it as providing us with some wisdom regarding composition - namely, the associativity and identity properties.
+好啦，现在你知道了，什么是类型和函数的范畴。不过如果你是第一次听说这些概念，我估计你还是有些迷糊，不知道范畴到底是什么，为什么有用。没关系，本书全书都在借助这些知识编写示例代码。至于现在，就在本章，本行文字中，你至少可以认为它向我们提供了有关组合的知识——比如结合律和 identity 属性。
 
-What are some other categories, you ask? Well, we can define one for directed graphs with nodes being objects, edges being morphisms, and composition just being path concatenation. We can define one for Numbers with `>` as morphisms and 0 as identity[^actually any partial or total order can be a category]. There are heaps of categories, but for the purposes of this book, we'll only concern ourselves with the one defined above. We have sufficiently skimmed the surface and must move on.
+除了类型和函数，还有什么范畴呢？呵呵，我们可以定义一个有向图（directed graph），以节点为对象，以边为态射，以路径连接为组合。还可以定义一个数值类型（Number），以 `>` 为态射，以 0 为 identity 属性[^实际上任何偏序（partial order）或全序（total order）都可以成为一个范畴]。范畴的总量是无数的，但是要达到本书预期的目的，我们只需要关心上面定义的范畴就好了。到这我们已经大致浏览了一些表面的东西，必须要继续后面的内容了。
 
+## 总结
+组合像一系列管道那样把不同的函数联系在一起，数据就可以也必须在其中流动——毕竟纯函数就是输入对输出，所以打破了这个链条就是对输出的亵渎，就会让我们的应用一无是处。
 
-## In Summary
-Composition connects our functions together like a series of pipes. Data will flow through our application as it must - pure functions are input to output after all so breaking this chain would disregard output, rendering our software useless.
+我们认为组合是高于其他所有原则的设计原则。这是因为组合使得我们的代码简单而富有可读性。同时范畴论将在应用架构、模拟副作用和保证正确性方面扮演重要角色。
 
-We hold composition as a design principle above all others. This is because it keeps our app simple and reasonable. Category theory will play a big part in app architecture, modelling side effects, and ensuring correctness.
+现在我们已经有足够的知识去进行一些实际的练习了，我们来编写一个示例应用。
 
-We are now at a point where it would serve us well to see some of this in practice. Let's make an example application.
+[第 6 章: 示例引用](ch6.md)
 
-[Chapter 6: Example Application](ch6.md)
-
-## Exercises
+## 练习
 
 ```js
 require('../../support');
 var _ = require('ramda');
 var accounting = require('accounting');
-  
-// Example Data
+
+// 示例数据
 var CARS = [
     {name: "Ferrari FF", horsepower: 660, dollar_value: 700000, in_stock: true},
     {name: "Spyker C12 Zagato", horsepower: 650, dollar_value: 648000, in_stock: false},
@@ -277,24 +276,24 @@ var CARS = [
     {name: "Pagani Huayra", horsepower: 700, dollar_value: 1300000, in_stock: false}
   ];
 
-// Exercise 1:
+// 练习 1:
 // ============
-// use _.compose() to rewrite the function below. Hint: _.prop() is curried.
+// 使用 _.compose() 重写下面这个函数。提示：_.prop() 是 curry 函数
 var isLastInStock = function(cars) {
   var last_car = _.last(cars);
   return _.prop('in_stock', last_car);
 };
 
-// Exercise 2:
+// 练习 2:
 // ============
-// use _.compose(), _.prop() and _.head() to retrieve the name of the first car
+// 使用 _.compose()、_.prop() 和 _.head() 获取第一个 car 的 name
 var nameOfFirstCar = undefined;
 
 
-// Exercise 3:
+// 练习 3:
 // ============
-// Use the helper function _average to refactor averageDollarValue as a composition
-var _average = function(xs) { return reduce(add, 0, xs) / xs.length; }; // <- leave be
+// 使用帮助函数 _average 重构 averageDollarValue 使之成为一个组合
+var _average = function(xs) { return reduce(add, 0, xs) / xs.length; }; // <- 无须改动
 
 var averageDollarValue = function(cars) {
   var dollar_values = map(function(c) { return c.dollar_value; }, cars);
@@ -302,18 +301,18 @@ var averageDollarValue = function(cars) {
 };
 
 
-// Exercise 4:
+// 练习 4:
 // ============
-// Write a function: sanitizeNames() using compose that returns a list of lowercase and underscored names: e.g: sanitizeNames(["Hello World"]) //=> ["hello_world"].
+// 使用 compose 写一个 sanitizeNames() 函数，返回一个下划线连接的小写字符串：例如：sanitizeNames(["Hello World"]) //=> ["hello_world"]。
 
-var _underscore = replace(/\W+/g, '_'); //<-- leave this alone and use to sanitize
+var _underscore = replace(/\W+/g, '_'); //<-- 无须改动，并在 sanitizeNames 中使用它
 
 var sanitizeNames = undefined;
 
 
-// Bonus 1:
+// 彩蛋 1:
 // ============
-// Refactor availablePrices with compose.
+// 使用 compose 重构 availablePrices
 
 var availablePrices = function(cars) {
   var available_cars = _.filter(_.prop('in_stock'), cars);
@@ -323,9 +322,9 @@ var availablePrices = function(cars) {
 };
 
 
-// Bonus 2:
+// 彩蛋 2:
 // ============
-// Refactor to pointfree. Hint: you can use _.flip()
+// 重构使之成为 pointfree 函数。提示：可以使用 _.flip()
 
 var fastestCar = function(cars) {
   var sorted = _.sortBy(function(car){ return car.horsepower }, cars);
