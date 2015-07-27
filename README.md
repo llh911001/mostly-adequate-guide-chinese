@@ -38,7 +38,7 @@
   * [没你就活不下去](ch4.md#没你就活不下去)
   * [不仅仅是双关语／特殊的酱料](ch4.md#不仅仅是双关语／特殊的酱料)
   * [总结](ch4.md#总结)
-* [Chapter 5: 代码组合](ch5.md)
+* [第 5 章: 代码组合](ch5.md)
   * [函数饲养](ch5.md#函数饲养)
   * [pointfree](ch5.md#pointfree)
   * [debug](ch5.md#debug)
