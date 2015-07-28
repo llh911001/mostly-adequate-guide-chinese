@@ -230,7 +230,7 @@ var signUp = function(Db, Email, attrs) {
   //=> Immutable.Map({name:"Michael", hp:19, team: "green"})
 ```
 
-`decrementHP`、`isSameTeam` 和 `punch` 都是纯函数，因此是引用透明的。我们可以使用一种叫做“等式推导”的技术来分析代码。所谓“等式推导”就是“一对一”替换，有点像不考虑整个程序的执行情况，仅仅手动执行相关的代码。让我们使用引用透明性来剖析下这段代码。
+`decrementHP`、`isSameTeam` 和 `punch` 都是纯函数，因此是引用透明的。我们可以使用一种叫做“等式推导”（equational reasoning）的技术来分析代码。所谓“等式推导”就是“一对一”替换，有点像不考虑整个程序的执行情况，仅仅手动执行相关的代码。让我们使用引用透明性来剖析下这段代码。
 
 我们首先内联 `isSameTeam` 函数：
 
@@ -284,4 +284,4 @@ Since our data is immutable, we can simply replace the teams with their actual v
 
 如果手头没有一些工具，那么纯函数程序写起来最起码就有些费力。我们不得不玩杂耍似的通过到处传递参数来操作数据，我们还被禁止使用状态，更别说“作用”了。没有人愿意这样自虐。所以我们要学习一个叫 curry 的新工具。
 
-[第 4 章: Currying](ch4.md)
+[第 4 章: 柯里化（currying）](ch4.md)

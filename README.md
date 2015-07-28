@@ -44,11 +44,11 @@
   * [debug](ch5.md#debug)
   * [范畴论](ch5.md#范畴论)
   * [总结](ch5.md#总结)
-* [Chapter 6: Example Application](ch6.md)
-  * [Declarative Coding](ch6.md#declarative-coding)
-  * [A flickr of functional programming](ch6.md#a-flickr-of-functional-programming)
-  * [A Principled Refactor](ch6.md#a-principled-refactor)
-  * [In Summary](ch6.md#in-summary)
+* [第 6章: 示例应用](ch6.md)
+  * [声明式代码](ch6.md#声明式代码)
+  * [一个函数式的 flickr](ch6.md#一个函数式的-flickr)
+  * [有原则的重构](ch6.md#有原则的重构)
+  * [总结](ch6.md#总结)
 
 ## Part 2
 

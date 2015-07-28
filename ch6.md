@@ -1,56 +1,55 @@
-# Chapter 6: Example Application
+# 第 6 章: 示例应用
 
-## Declarative coding
+## 声明式代码
 
-We are going to switch our mindset. From here on out, we'll stop telling the computer how to do its job and instead write a specification of what we'd like as a result. I'm sure you'll find it much less stressful than trying to micromanage everything all the time.
+我们要开始转换思路了，从本章开始，我们将不再指示计算机如何工作，而是指出我们明确希望得到的结果。我敢保证，这种做法与那种需要你时刻关心所有细节的命令式编程相比，会让你轻松许多。
 
-Declarative, as opposed to imperative, means that we will write expressions, as opposed to step by step instructions.
+与命令式不同，声明式意味着我们要写表达式，而不是一步一步的指示。
 
-Think of SQL. There is no "first do this, then do that". There is one expression that specifies what'd like from the database. We don't decide how to do the work, it does. When the database is upgraded and the SQL engine optimized, we don't have to change our query. This is because there are many ways to interpret our specification and achieve the same result.
+像 SQL 就没有“先做这个，再做那个”的命令。有的只是一个指明我们想要从数据库取什么数据的表达式。是它自己，而不是我们，决定如何取数据。以后数据库升级也好，SQL 引擎优化也好，根本不需要更改查询语句。这是因为，有很多种方法可以解析我们的表达式并得到同一个结果。
 
-For some folks, myself included, it's hard to grasp the concept of declarative coding at first so let's point out a few examples to get a feel for it.
+对包括我在内的一些人来说，一开始是不太容易理解“声明式”这个概念的；所以让我们写几个例子来找找感觉。
 
 ```js
-// imperative
+// 命令式
 var makes = [];
-for (i = 0; i < cars.length; i++) { 
+for (i = 0; i < cars.length; i++) {
   makes.push(cars[i].make);
 }
 
 
-// declarative
+// 声明式
 cars.map(function(car){ return car.make; });
 ```
 
-The imperative loop must first instantiate the array. The interpreter must evaluate this statement before moving on. Then it directly iterates through the list of cars, manually increasing a counter and showing its bits and pieces to us in a vulgar display of explicit iteration.
+命令式的循环要求你必须先初始化一个数组，执行完这个初始化语句之后，解释器才继续执行后面的代码。然后再直接迭代 `cars` 列表，手动增加计数器，把各种零零散散的东西都展示出来...实在是直白得有些粗俗。
 
-The `map` version is one expression. It does not require any order of evaluation. There is much freedom here for how the map function iterates and how the returned array may be assembled. It specifies *what*, not *how*. Thus, it wears the shiny declarative sash.
+使用 `map` 的版本是一个表达式，它对执行顺序没有要求。而且，`map` 函数如何进行迭代，返回的数组如何收集，都有很大的自由度。它指明的是`做什么`，不是`怎么做`。因此，它是正儿八经的声明式代码。
 
-In addition to being clearer and more concise, the map function may be optimized at will and our precious application code needn't change.
+除了更加清晰和简洁之外，如果我们愿意，`map` 函数也有可能得到优化，这么一来我们宝贵的应用代码就无须改动了。
 
-For those of you who are thinking "Yes, but it's much faster to do the imperative loop", I suggest you educate yourself on how the JIT optimizes your code. Here's a [terrific video that may shed some light](https://www.youtube.com/watch?v=65-RbBwZQdU)
+至于那些说“虽然如此，但使用命令式循环速度要快很多”的人，我建议你们先去学学 JIT 优化代码的相关知识。这里有一个[非常棒的视频](https://www.youtube.com/watch?v=65-RbBwZQdU)，可能会帮助你解惑。
 
-Here is another example.
+这里还有一个例子。
 
 ```js
-// imperative
+// 命令式
 var authenticate = function(form) {
   var user = toUser(form);
   return logIn(user);
 };
 
-// declarative
+// 声明式
 var authenticate = compose(logIn, toUser);
 ```
 
-Though there's nothing necessarily wrong with the imperative version, there is still an encoded step-by-step evaluation baked in. The `compose` expression simply states a fact: Authentication is the composition of `toUser` and `logIn`. Again, this leaves wiggle room for support code changes and results in our application code being a high level specification.
+虽然命令式的版本并不一定就是错的，但还是硬编码了那种一步接一步的执行方式。而 `compose` 表达式只是简单地指出了这样一个事实：authenticate 是 `toUser` 和 `logIn` 的组合。这再次说明，声明式为潜在的代码更新提供了支持，使得我们的应用代码成为了一种高级规范（high level specification）。
 
-Because we are not encoding order of evaluation, declarative coding lends itself to parallel computing. This coupled with pure functions is why FP is a good option for the parallel future - we don't really need to do anything special to achieve parallel/concurrent systems.
+因为声明式代码不指定执行顺序，所以它天然地适合进行并行运算。它与纯函数一起解释了为何函数式编程是未来并行计算的一个不错选择——我们真的不需要做什么就能实现一个并行／并发系统。
 
-## A flickr of functional programming
+## 一个函数式的 flickr
 
-We will now build an example application in a declarative, composable way. We'll still cheat and use side effects for now, but we'll keep them minimal and separate from our pure codebase. We are going to build a browser widget that sucks in flickr images and displays them. Let's start by scaffolding the app. Here's the html:
-
+现在我们以一种声明式的、可组合的方式创建一个示例应用。暂时我们还是会作弊，使用副作用；但我们会把副作用降到最低，让它们与纯函数代码分离开来。这个示例应用是一个浏览器 widget，功能是从 flickr 获取图片并展示。我们从搭架子开始，html 如下：
 
 ```html
 <!DOCTYPE html>
@@ -63,7 +62,7 @@ We will now build an example application in a declarative, composable way. We'll
 </html>
 ```
 
-And here's the flickr.js skeleton:
+这里是 flickr.js 骨架：
 
 ```js
 requirejs.config({
@@ -86,16 +85,16 @@ require([
   });
 ```
 
-We're pulling in [ramda](http://ramdajs.com) instead of lodash or some other utility library. It includes `compose`, `curry`, and more. I've used requirejs, which may seem like overkill, but we'll be using it throughout the book and consistency is key. Also, I've started us off with our nice `trace` function for easy debugging.
+这里我们使用 [ramda](http://ramdajs.com) 而不是 lodash 或者其他类库，原因是 ramda 提供了 `compose`、`curry` 等很多函数。模块加载我们选择的是 requirejs，我以前用过 requirejs，虽然它有些重，但为了保持一致性，本书将一直使用它。另外，我也把 `trace` 函数写好了，便于 debug。
 
-Now that that's out of the way, on to the spec. Our app will do 4 things.
+有点跑题了。言归正传，我们的应用将做 4 件事：
 
-1. Construct a url for our particular search term
-2. Make the flickr api call
-3. Transform the resulting json into html images
-4. Place them on the screen
+1. 根据特定搜索关键字构造 url
+2. 向 flickr 发送 api 请求
+3. 把返回的 json 转为 html 图片
+4. 把图片放到屏幕上
 
-There are 2 impure actions mentioned above. Do you see them? Those bits about getting data from the flickr api and placing it on the screen. Let's define those first so we can quarantine them.
+注意到没？上面提到了两个不纯的动作，即从 flickr 的 api 获取数据和在屏幕上放置图片这两件事。我们先来定义这两个动作，这样就能隔离它们了。
 
 ```js
 var Impure = {
@@ -109,9 +108,9 @@ var Impure = {
 };
 ```
 
-Here we've simply wrapped jQuery's methods to be curried and we've swapped the arguments to a more favorable position. I've namespaced them with `Impure` so we know these are dangerous functions. In a future example, we will make these two functions pure.
+这里我们只是简单地包装了一下 jQuery 的 `getJSON` 方法，把它变为一个 curry 函数，还有就是把参数调换到了更有利的位置。这些方法都在 `Impure` 命名空间下，这样我们就知道它们都是危险函数。在后面的例子中，我们会把这两个函数变纯。
 
-Next we must construct a url to pass to our `Impure.getJSON` function.
+下一步是构造 url 传给 `Impure.getJSON` 函数。
 
 ```js
 var url = function (term) {
@@ -119,9 +118,9 @@ var url = function (term) {
 };
 ```
 
-There are fancy and overly complex ways of writing `url` pointfree using monoids[^we'll learn about these later] or combinators. We've chosen to stick with a readable version and assemble this string in the normal pointful fashion.
+借助 monoid 或 combinator [^后面会讲到这些概念]，我们可以使用一些奇技淫巧来让 `url` 函数变为 pointfree 函数。但是为了可读性，我们选择以普通的非 pointfree 的方式拼接字符串。
 
-Let's write an app function that makes the call and places the contents on the screen.
+让我们写一个 `app` 函数发送请求并把内容放置到屏幕上。
 
 ```js
 var app = _.compose(Impure.getJSON(trace("response")), url);
@@ -129,13 +128,13 @@ var app = _.compose(Impure.getJSON(trace("response")), url);
 app("cats");
 ```
 
-This calls our `url` function, then passes the string to our `getJSON` function, which has been partially applied with `trace`. Loading the app will show the response from the api call in the console.
+这会调用 `url` 函数，然后把字符串传给 `getJSON` 函数，`getJSON` 已经局部应用了 `trace`。加载这个应用将会把请求的响应显示在 console 里。
 
 <img src="images/console_ss.png"/>
 
-We'd like to construct images out of this json. It looks like the srcs are buried in `items` then each `media`'s `m` property. Bang up job, flickr api crew, `m` plays perfectly to my intuition.
+我们需要从这个 json 里构造图片，看起来 src 都在 `items` 数组中的每个 `media` 对象的 `m` 属性上。flickr 的 api 团队太棒了，`m` 正合我意。
 
-Anyhow, to get at these nested properties we can use a nice universal getter function from ramda called `_.prop()`. Here's a homegrown version so you can see what's happening:
+不管怎样，我们可以使用 ramda 的一个通用 getter 函数 `_.prop()` 来获取这些嵌套的属性。不过为了让你明白这个函数做了什么事情，我们自己实现一个 prop：
 
 ```js
 var prop = _.curry(function(property, object){
@@ -143,7 +142,7 @@ var prop = _.curry(function(property, object){
 });
 ```
 
-It's quite dull actually. We just use `[]` syntax to access a property on whatever object. Let's use this to get at our srcs.
+实际上这有点傻，我们仅仅是用 `[]` 来获取一个对象的属性而已。让我们利用这个函数获取图片的 src。
 
 ```js
 var mediaUrl = _.compose(_.prop('m'), _.prop('media'));
@@ -151,16 +150,16 @@ var mediaUrl = _.compose(_.prop('m'), _.prop('media'));
 var srcs = _.compose(_.map(mediaUrl), _.prop('items'));
 ```
 
-Once we gather the `items`, we must `map` over them to extract each media url. This results in a nice array of srcs. Let's hook this up to our app and print them on the screen.
+一旦得到了 `items`，我们就必须是用 `map` 来分解每一个 url；这样就得到了一个漂亮的包含所有 src 的数组。我们把它和 `app` 联结起来，打印结果看看。
 
 ```js
 var renderImages = _.compose(Impure.setHtml("body"), srcs);
 var app = _.compose(Impure.getJSON(renderImages), url);
 ```
 
-All we've done is make a new composition that will call our `srcs` and set the body html with them. We've replaced the `trace` call with `renderImages` now that we have something to render besides raw json. This will crudely display our srcs directly in the body.
+我们所做的只不过是新建了一个组合，这个组合会调用 `srcs` 函数，并把返回结果设置为 body 的 html。我们也把 `trace` 替换为了 `renderImages`，因为已经有了除原始 json 以外的数据。这将会粗暴地把所有的 src 直接显示在屏幕上。
 
-Our final step is to turn these srcs into bonafide images. In a bigger application, we'd use a template/dom library like Handlebars or React. For this application though, we only need an img tag so let's stick with jQuery.
+最后一步是把这些 src 变为真正的图片。对大型点的应用来说，是应该使用类似 Handlebars 或者 React 这样的 template/dom 库来做这件事的。但我们这个应用太小了，只需要一个 img 标签，所以用 jQuery 就好了。
 
 ```js
 var img = function (url) {
@@ -168,7 +167,7 @@ var img = function (url) {
 };
 ```
 
-jQuery's `html()` method will accept an array of tags. We only have to transform our srcs into images and send them along to `setHtml`.
+jQuery 的 `html()` 方法接受标签数组为参数，所以我们只须把 src 转换为 img 标签然后传给 `setHtml` 即可。
 
 ```js
 var images = _.compose(_.map(img), srcs);
@@ -176,11 +175,12 @@ var renderImages = _.compose(Impure.setHtml("body"), images);
 var app = _.compose(Impure.getJSON(renderImages), url);
 ```
 
-And we're done!
+任务完成！
 
 <img src="images/cats_ss.png" />
 
-Here is the finished script:
+下面是完整代码：
+
 ```js
 requirejs.config({
   paths: {
@@ -236,22 +236,22 @@ require([
   });
 ```
 
-Now look at that. A beautifully declarative specification of what things are, not how they come to be. We now view each line as an equation with properties that hold. We can use these properties to reason about our application and refactor.
+看看，多么美妙的声明式规范啊，只说做什么，不说怎么做。现在我们可以把每一行代码都视作一个等式，变量名所代表的属性就是等式的含义。我们可以利用这些属性去推导分析和重构我们的应用。
 
-## A Principled Refactor
+## 有原则的重构
 
-There is an optimization available - we map over each item to turn it into a media url, then we map again over those srcs to turn them into img tags. There is a law regarding map and composition:
-
+上面的代码是有优化空间的——我们获取 url map 了一次，把这些 url 变为 img 标签又 map 了一次。关于 map 和组合是有定律的：
 
 ```js
-// map's composition law
+// map 的组合律
 var law = compose(map(f), map(g)) == map(compose(f, g));
 ```
 
 We can use this property to optimize our code. Let's have a principled refactor.
+我们可以利用这个特性优化代码，让我们进行一次有原则的重构。
 
 ```js
-// original code
+// 原有代码
 var mediaUrl = _.compose(_.prop('m'), _.prop('media'));
 
 var srcs = _.compose(_.map(mediaUrl), _.prop('items'));
@@ -260,7 +260,7 @@ var images = _.compose(_.map(img), srcs);
 
 ```
 
-Let's line up our maps. We can inline the call to `srcs` in `images` thanks to equational reasoning and purity.
+感谢等式推导（equational reasoning）及纯函数的特性，我们可以内联调用 `srcs` 和 `images`，也就是把 map 调用排列起来。
 
 ```js
 var mediaUrl = _.compose(_.prop('m'), _.prop('media'));
@@ -268,7 +268,7 @@ var mediaUrl = _.compose(_.prop('m'), _.prop('media'));
 var images = _.compose(_.map(img), _.map(mediaUrl), _.prop('items'));
 ```
 
-Now that we've lined up our `map`'s we can apply the composition law.
+把 `map` 排成一列之后就可以应用组合律了。
 
 ```js
 var mediaUrl = _.compose(_.prop('m'), _.prop('media'));
@@ -276,7 +276,7 @@ var mediaUrl = _.compose(_.prop('m'), _.prop('media'));
 var images = _.compose(_.map(_.compose(img, mediaUrl)), _.prop('items'));
 ```
 
-Now the bugger will only loop once while turning each item into an img. Let's just make it a little more readable by extracting the function out.
+现在只需要循环一次就可以把每一个对象都转为 img 标签。让我们把 map 调用的 compose 取出来放到外面，提高一下可读性。
 
 ```js
 var mediaUrl = _.compose(_.prop('m'), _.prop('media'));
@@ -286,8 +286,8 @@ var mediaToImg = _.compose(img, mediaUrl);
 var images = _.compose(_.map(mediaToImg), _.prop('items'));
 ```
 
-## In Summary
+## 总结
 
-We have seen how to put our new skills into use with a small, but real world app. We've used our mathematical framework to reason about and refactor our code. But what about error handling and code branching? How can we make the whole application pure instead of merely namespacing destructive functions? How can we make our app safer and more expressive? These are the questions we will tackle in part 2.
+我们已经见识到如何在一个虽然小但却真实的应用中运用我们的新技能了，也已经使用过函数式这个“数学框架”来推导和重构代码了。但是异常处理以及代码分支呢？如何让整个应用都是函数式的，而不仅仅是把破坏性的函数放到命名空间下？如何让应用更安全更富有表现力？这些都是本书第 2 部分将要解决的问题。
 
 [Chapter 7: Hindley-Milner and Me](ch7.md)
