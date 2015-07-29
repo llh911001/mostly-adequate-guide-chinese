@@ -244,8 +244,7 @@ var signUp = function(Db, Email, attrs) {
   };
 ```
 
-Since our data is immutable, we can simply replace the teams with their actual value
-因为式不可变数据，我们可以直接把 `team` 替换为真值：
+因为是不可变数据，我们可以直接把 `team` 替换为实际值：
 
 ```js
   var punch = function(player, target) {
@@ -257,7 +256,7 @@ Since our data is immutable, we can simply replace the teams with their actual v
   };
 ```
 
-`if` 语句执行结果为 `false`，所以我们可以把整个 `if` 语句都删掉：
+`if` 语句执行结果为 `false`，所以可以把整个 `if` 语句都删掉：
 
 ```js
   var punch = function(player, target) {
@@ -266,7 +265,7 @@ Since our data is immutable, we can simply replace the teams with their actual v
 
 ```
 
-如果再内联 `decrementHP`，我们发现这种情况下，`punch` 变成了一个让 `hp` 的值减 1 的调用：
+如果再内联 `decrementHP`，我们会发现这种情况下，`punch` 变成了一个让 `hp` 的值减 1 的调用：
 
 ```js
   var punch = function(player, target) {
@@ -274,14 +273,14 @@ Since our data is immutable, we can simply replace the teams with their actual v
   };
 ```
 
-一般而言，等式推导带来的分析代码的能力对重构和理解代码非常重要。事实上，我们重构海鸥程序使用的正是这项技术：利用加和乘的属性。而且这些技术的使用将贯穿本书，真的。
+一般而言，等式推导带来的分析代码的能力对重构和理解代码非常重要。事实上，我们重构海鸥程序使用的正是这项技术：利用加和乘的特性。对这些技术的使用将贯穿本书，真的。
 
 ### 并行代码
-最后一点，也是最强大的一点：我们可以并行运行任意纯函数。因为纯函数根本不需要访问共享的内存，而且根据其定义，纯函数也不会由于副作用而进入竞争态（race condition）。对服务端的 js 环境以及使用了 web worker 的浏览器来说，并行运行代码是非常容易实现的，因为它们使用了线程（thread）。不过出于对非纯函数复杂度的考虑，当前主流的看法还是避免使用并行。
+最后一点，也是最强大的一点：我们可以并行运行任意纯函数。因为纯函数根本不需要访问共享的内存，而且根据其定义，纯函数也不会由于副作用而进入竞争态（race condition）。对服务端的 js 环境以及使用了 web worker 的浏览器来说，并行运行代码是非常容易实现的，因为它们使用了线程（thread）。不过出于对非纯函数复杂度的考虑，当前主流的看法还是避免使用这种并行。
 
 ## 总结
 我们已经了解什么是纯函数了，也看到作为函数式程序员的我们，为何会深信纯函数是不同凡响的。从这开始，我们将尽力以纯函数式的方式书写所有的函数。为此我们将需要一些额外的工具来达成目标，同时也尽量把非纯函数从纯函数代码中剥离。
 
 如果手头没有一些工具，那么纯函数程序写起来最起码就有些费力。我们不得不玩杂耍似的通过到处传递参数来操作数据，我们还被禁止使用状态，更别说“作用”了。没有人愿意这样自虐。所以我们要学习一个叫 curry 的新工具。
 
-[第 4 章: 柯里化（currying）](ch4.md)
+[第 4 章: 柯里化（curry）](ch4.md)
