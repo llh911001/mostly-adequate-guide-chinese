@@ -35,8 +35,8 @@
   * [追求“纯”的理由](ch3.md#追求“纯”的理由)
   * [总结](ch3.md#总结)
 * [第 4 章: 柯里化（curry）](ch4.md)
-  * [没你就活不下去](ch4.md#没你就活不下去)
-  * [不仅仅是双关语／特殊的酱料](ch4.md#不仅仅是双关语／特殊的酱料)
+  * [不可或缺的 curry](ch4.md#不可或缺的-curry)
+  * [不仅仅是双关语／咖喱](ch4.md#不仅仅是双关语／咖喱)
   * [总结](ch4.md#总结)
 * [第 5 章: 代码组合（compose）](ch5.md)
   * [函数饲养](ch5.md#函数饲养)
@@ -50,7 +50,7 @@
   * [有原则的重构](ch6.md#有原则的重构)
   * [总结](ch6.md#总结)
 
-## Part 2
+## 第 2 部分
 
 * [Chapter 7: Hindley-Milner and Me](ch7.md)
   * [What's your type?](ch7.md#whats-your-type)
