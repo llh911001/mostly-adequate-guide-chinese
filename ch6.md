@@ -6,7 +6,7 @@
 
 与命令式不同，声明式意味着我们要写表达式，而不是一步一步的指示。
 
-像 SQL 就没有“先做这个，再做那个”的命令。有的只是一个指明我们想要从数据库取什么数据的表达式。是它自己，而不是我们，决定如何取数据。以后数据库升级也好，SQL 引擎优化也好，根本不需要更改查询语句。这是因为，有很多种方法可以解析我们的表达式并得到同一个结果。
+像 SQL 就没有“先做这个，再做那个”的命令。有的只是一个指明我们想要从数据库取什么数据的表达式。是它自己，而不是我们，决定如何取数据。以后数据库升级也好，SQL 引擎优化也好，根本不需要更改查询语句。这是因为，不同解析器解析同一个表达式得到的结果是相同的。
 
 对包括我在内的一些人来说，一开始是不太容易理解“声明式”这个概念的；所以让我们写几个例子来找找感觉。
 
@@ -134,7 +134,7 @@ app("cats");
 
 我们需要从这个 json 里构造图片，看起来 src 都在 `items` 数组中的每个 `media` 对象的 `m` 属性上。flickr 的 api 团队太棒了，`m` 正合我意。
 
-不管怎样，我们可以使用 ramda 的一个通用 getter 函数 `_.prop()` 来获取这些嵌套的属性。不过为了让你明白这个函数做了什么事情，我们自己实现一个 prop：
+不管怎样，我们可以使用 ramda 的一个通用 getter 函数 `_.prop()` 来获取这些嵌套的属性。不过为了让你明白这个函数做了什么事情，我们自己实现一个 prop 看看：
 
 ```js
 var prop = _.curry(function(property, object){
@@ -150,7 +150,7 @@ var mediaUrl = _.compose(_.prop('m'), _.prop('media'));
 var srcs = _.compose(_.map(mediaUrl), _.prop('items'));
 ```
 
-一旦得到了 `items`，我们就必须是用 `map` 来分解每一个 url；这样就得到了一个漂亮的包含所有 src 的数组。我们把它和 `app` 联结起来，打印结果看看。
+一旦得到了 `items`，我们就必须使用 `map` 来分解每一个 url；这样就得到了一个漂亮的包含所有 src 的数组。我们把它和 `app` 联结起来，打印结果看看。
 
 ```js
 var renderImages = _.compose(Impure.setHtml("body"), srcs);
@@ -247,7 +247,6 @@ require([
 var law = compose(map(f), map(g)) == map(compose(f, g));
 ```
 
-We can use this property to optimize our code. Let's have a principled refactor.
 我们可以利用这个特性优化代码，让我们进行一次有原则的重构。
 
 ```js
