@@ -1,18 +1,18 @@
-# Hindley-Milner and Me
+# Hindley-Milner 类型签名
 
-## What's your type?
-If you're new to the functional world, it won't be long before you find yourself knee deep in type signatures. Types are the meta language that enables people from all different backgrounds to communicate succinctly and effectively. For the most part, they're written with a system called "Hindley-Milner", which we'll be examining together in this chapter.
+## 初识类型
 
-When working with pure functions, type signatures have an expressive power to which the English language cannot hold a candle. These signatures whisper in your ear the intimate secrets of a function. In a single, compact line, they expose behaviour and intention. We can derive "free theorems" from them. Types can be inferred so there's no need for explicit type annotations. They can be tuned to fine point precision or left general and abstract. They are not only useful for compile time checks, but also turn out to be the best possible documentation available. Type signatures thus play an important part in functional programming - much more than you might first expect.
+刚接触函数式编程的人很容易深陷类型签名（type signatures）的泥淖。类型（type）是让所有不同背景的人都能高效沟通的元语言。很大程度上，类型签名是以 “Hindley-Milner” 系统写就的，本章我们将一起来探究下这个系统。
 
-JavaScript is a dynamic language, but that does not mean we avoid types all together. We're still working with strings, numbers, booleans, and so on. It's just that there isn't any language level integration so we hold this information in our heads. Not to worry, since we're using signatures for documentation, we can use comments to serve our purpose.
+类型签名在写纯函数时所起的作用非常大，大到英语都不能望其项背。这些签名轻轻诉说着函数最不可告人的秘密。短短一行，就能暴露函数的行为和目的。类型签名还衍生出了 “自由定理（free theorems）” 的概念。因为类型是可以推断的，所以明确的类型签名并不是必要的；不过你完全可以写精确度很高的类型签名，也可以让它们保持通用、抽象。类型签名不但可以用于编译时检测（compile time checks），还可以是文档的最佳来源。所以类型签名在函数式编程中扮演着非常重要的角色——重要程度远远超乎你的想象。
 
-There are type checking tools available for JavaScript such as [Flow](http://flowtype.org/) or the typed dialect, [TypeScript](http://www.typescriptlang.org/). The aim of this book is to equip one with the tools to write functional code so we'll stick with the standard type system used across FP languages.
+JavaScript 是一种动态类型语言，但这并不意味着要一味否定类型。我们还是要和字符串、数值、布尔值等等类型打交道的；只不过，语言层面上没有相关的集成让我们时刻谨记各种数据的类型罢了。别担心，既然我们可以用类型签名生成文档，也可以用注释来达到区分类型的目的。
 
+JavaScript 也有一些类型检查工具，比如 [Flow](http://flowtype.org/)，以及它的静态类型方言 [TypeScript](http://www.typescriptlang.org/) 自带类型检查。由于本书的目标是让读者能够熟练使用各种工具去书写函数式代码，所以我们将选择所有函数式语言都遵循的标准类型系统。
 
-## Tales from the cryptic
+## 神秘的传奇故事
 
-From the dusty pages of math books, across the vast sea of white papers, amongst casual saturday morning blog posts, down into the source code itself, we find Hindley-Milner type signatures. The system is quite simple, but warrants a quick explanation and some practice to fully absorb the little language.
+从积尘已久的数学书，到浩如烟海的学术论文；从每周必读的博客文章，到每一行源代码，我们终于发现了 Hindley-Milner 类型签名。Hindley-Milner 并不是一个复杂的系统，但还是需要一些解释和练习才能完全掌握这个小型语言的要义。
 
 ```js
 //  capitalize :: String -> String
@@ -22,11 +22,11 @@ capitalize("smurf");
 //=> "Smurf"
 ```
 
-Here, `capitalize` takes a `String` and returns a `String`. Never mind the implementation, it's the type signature we're interested in.
+这里，`capitalize` 接受一个 `String` 并返回了一个 `String`。先别管实现，我们感兴趣的是它的类型签名。
 
-In HM, functions are written as `a -> b` where `a` and `b` are variables for any type. So the signatures for `capitalize` can be read as "a function from `String` to `String`". In other words, it takes a `String` as it's input and returns a `String` as it's output.
+在 Hindley-Milner 系统中，函数都写成类似 `a ->b` 这个样子，其中 `a` 和`b` 是任意类型的变量。因此，`capitalize` 函数的类型签名可以理解为“一个接受 `String` 返回 `String` 的函数”。换句话说，它接受一个 `String` 类型作为输入，并返回一个 `String` 类型的输出。
 
-Let's look some more function signatures:
+让我们再来看一些函数签名：
 
 ```js
 //  strLength :: String -> Number
@@ -50,11 +50,11 @@ var replace = curry(function(reg, sub, s){
 });
 ```
 
-`strLength` is the same idea as before: we take a `String` and return you a `Number`.
+`strLength` 和 `capitalize` 类似：接受一个 `String` 然后返回一个 `Number`。
 
-The others might perplex you at first glance. Without fully understanding the details, you could always just view the last type as the return value. So for `match` you can interpret as: It takes a `Regex` and a `String` and returns you `[String]`. But an interesting thing is going on here that I'd like to take a moment to explain if I may.
+至于其他的，第一眼看起来可能会比较疑惑。不过在还不完全了解细节的情况下，你尽可以把最后一个类型视作返回值。那么 `match` 函数就可以这么理解：它接受一个 `Regex` 和一个 `String`，返回一个 `[String]`。但是，这里有一个非常有趣地方，请允许我稍作解释。
 
-For `match` we are free to group the signature like so:
+对于 `match` 函数，我们完全可以把它的类型签名这样分组：
 
 ```js
 //  match :: Regex -> (String -> [String])
@@ -63,7 +63,7 @@ var match = curry(function(reg, s){
 });
 ```
 
-Ah yes, grouping the last part in parenthesis reveals more information. Now it is seen a function that takes a `Regex` and returns us a function from `String` to `[String]`. Because of currying, this is indeed the case: give it a `Regex` and we get a function back waiting for it's `String` argument. Of course, we don't have to think of it this way, but it is good to understand why the last type is the one returned.
+是的，把最后两个类型包在括号里就能反映更多的信息了。现在我们可以看出它接受一个 `Regex`，返回一个从 `String` 到 `[String]` 的函数。因为 curry，造成的结果就是这样：给 `match` 函数一个 `Regex`，得到一个新函数，能够处理其 `String` 参数。当然了，我们并非一定要这么看待这个过程，但这样思考有助于理解为何最后一个类型是返回值。
 
 ```js
 //  match :: Regex -> (String -> [String])
@@ -72,7 +72,7 @@ Ah yes, grouping the last part in parenthesis reveals more information. Now it i
 var onHoliday = match(/holiday/ig);
 ```
 
-Each argument pops one type off the front of the signature. `onHoliday` is `match` that already has a `Regex`.
+每传一个参数，就会弹出类型签名最前面的那个类型。所以 `onHoliday` 就是已经有了 `Regex` 参数的 `match`。
 
 ```js
 //  replace :: Regex -> (String -> (String -> String))
@@ -81,10 +81,9 @@ var replace = curry(function(reg, sub, s){
 });
 ```
 
-As you can see with the full parenthesis on `replace`, the extra notation can get a little noisy and redundant so we simply omit them. We can give all the arguments at once if we choose so it's easier to just think of it as: `replace` takes a `Regex`, a `String`, another `String` and returns you a `String`.
+但是在这段代码中，就像你看到的那样，为 `replace` 加上这么多括号未免有些多余。所以这里的括号是完全可以省略的，如果我们愿意，可以一次性把所有的参数都传进来；所以，一种更简单的思路是：`replace` 接受三个参数，分别是 `Regex`、`String` 和另一个 `String`，返回的还是一个 `String`。
 
-A few last things here:
-
+最后几点：
 
 ```js
 //  id :: a -> a
@@ -96,15 +95,15 @@ var map = curry(function(f, xs){
 });
 ```
 
-The `id` function takes any old type `a` and returns something of the same type `a`. We're able to use variables in types just like in code. Variable names like `a` and `b` are convention, but they are arbitrary and can be replaced with whatever name you'd like. If they are the same variable, they have to be the same type. That's an important rule so let's reiterate: `a -> b` can be any type `a` to any type `b`, but `a -> a` means it has to be the same type. For example, `id` may be `String -> String` or `Number -> Number`, but not `String -> Bool`.
+这里的 `id` 函数接受任意类型的 `a` 并返回同一个类型的数据。和普通代码一样，我们也可以在类型签名中使用变量。把变量命名为 `a` 和 `b` 只是一种约定俗成的习惯，你可以使用任何你喜欢的名称。对于相同的变量名，其类型也一定相同。这是非常重要的一个原则，所以我们必须重申：`a -> b` 可以是从任意类型的 `a` 到任意类型的 `b`，但是 `a -> a` 必须是同一个类型。例如，`id` 可以是 `String -> String`，也可以是 `Number -> Number`，但不能是 `String -> Bool`。
 
-`map` similarly uses type variables, but this time we introduce `b` which may or may not be the same type as `a`. We can read it as: `map` takes a function from any type `a` to the same or different type `b`, then takes an array of `a`'s and results in an array of `b`'s.
+相似地，`map` 也使用了变量，只不过这里的 `b` 可能与 `a` 类型相同，也可能不相同。我们可以这么理解：`map` 接受两个参数，第一个是从任意类型 `a` 到任意类型 `b` 的函数；第二个是一个数组，元素是任意类型的 `a`；`map` 最后返回的是一个类型 `b` 的数组。
 
-Hopefully, you've been overcome by the expressive beauty in this type signature. It literally tells us what the function does almost word for word. It's given a function from `a` to `b`, an array of `a`, and it delivers us an array of `b`. The only sensible thing for it to do is call the bloody function on each `a`. Anything else would be a bold face lie.
+类型签名的美妙令人印象深刻，希望你已经被它深深折服。类型签名简直能够一字一句地告诉我们函数做了什么事情。比如 `map` 函数就是这样：给定一个从 `a` 到 `b` 的函数和一个 `a` 类型的数组，它就能返回一个 `b` 类型的数组；它唯一能做的明智之举就是用其函数参数调用每一个 `a`，其他所有操作都是噱头。
 
-Being able to reason about types and their implications is a skill that will take you far in the functional world. Not only will papers, blogs, docs, etc, become more digestible, but the signature itself will practically lecture you on it's functionality. It takes practice to become a fluent reader, but if you stick with it, heaps of information will become available to you sans RTFMing.
+辨别类型和它们的暗示是一项重要的技能，这项技能可以让你在函数式编程的路上走得更远。不仅论文、博客和文档等更易理解，类型签名本身也能够实际地讲授它的功能。要成为一个能够熟练读懂类型签名的人，你得花点时间；不过一旦掌握了这像技能，你将会受益无穷，不读手册也能获取大量信息。
 
-Here's a few more just to see if you can decipher them on your own.
+这里还有一些例子，你可以自己试试看能不能理解它们。
 
 ```js
 //  head :: [a] -> a
@@ -121,31 +120,31 @@ var reduce = curry(function(f, x, xs){
 });
 ```
 
-`reduce` is perhaps, the most expressive of all. It's a tricky one, however, so don't feel inadequate should you struggle with it.
+这所有的类型签名里面，`reduce` 可能是最有意义的了。不过它有点棘手，不易理解，所以如果你理解起来感觉吃力的话，也不必气馁。
 
-## Narrowing the possibility
+## 缩小可能性范围
 
-Once a type variable is introduce, there emerges a curious property called *parametricity*[^http://en.wikipedia.org/wiki/Parametricity]. This property states that a function will *act on all types in a uniform manner*. Let's investigate:
+一旦引入一个类型变量，就会出现一个奇怪的特性叫做 *parametricity*[^http://en.wikipedia.org/wiki/Parametricity]。这个特性表明，函数将会*以一种统一的行为作用于所有的类型*。我们来研究下：
 
 ```js
 // head :: [a] -> a
 ```
 
-Looking at `head`, we see that it takes `[a]` to `a`. Besides the concrete type `array`, it has no other information available and, therefore, it's functionality is limited to working on the array alone. What could it possibly do with the variable `a` if it knows nothing about it? In other words, `a` says it cannot be a *specific* type, which means it can be *any* type, which leaves us with a function that must work uniformly for *every* conceivable type. This is what *parametricity* is all about. Guessing at the implementation, the only reasonable assumptions are that it takes the first, last, or a random element from that array. The name `head` should tip us off.
+注意看 `head`，可以看到它接受 `[a]` 返回 `a`。我们除了知道参数是个`数组`，其他的一概不知；所以函数的功能就只限于操作这个数组上。在它对 `a` 一无所知的情况下，它可能对 `a` 做什么操作呢？换句话说，`a` 告诉我们它不是一个`特定`的类型，这意味着它可能是`任意`类型；那么我们的函数对*每一个*可能的类型的操作都必须保持统一。要让我们来猜测 `head` 的实现的话，唯一合理的推断就是它返回数组的第一个，或者最后一个，或者某个随机的元素；当然，`head` 这个命名应该能给我们一些线索。
 
-Here's another one:
+再看一个例子：
 
 ```js
 // reverse :: [a] -> [a]
 ```
 
-From the type signature alone, what could `reverse` possibly be up to? Again, it cannot do anything specific to `a`. It cannot change `a` to a different type or we'd introduce a `b`. Can it sort? Well, no, it wouldn't have enough information to sort every possible type. Can it re-arrange?  Yes, I suppose it can do that, but it has to do so in exactly the same predictable way. Another possibility is that it may decide to remove or duplicate an element. In any case, the point is, the possible behaviour is massively narrowed by it's polymorphic type.
+仅从类型签名来看，`reverse` 可能的目的是什么？再次强调，它不能对 `a` 做任何特定的事情。它不能把 `a` 变为另一个类型的数据，或者引入一个 `b`；这都是不可能的。那它可以排序么？答案是不能，没有足够的信息让它去为每一个可能的类型排序。它能重新排列么？可以的，我觉得它可以，但它必须以一种可预料的方式达成目标。另外，它也有可能删除或者重复一个元素。重点是，不管在哪种情况下，类型 `a` 的多态性都会大幅缩小 `reverse` 函数可能的行为的范围。
 
-This narrowing of possibility allows us to use type signature search engines like [Hoogle](https://www.haskell.org/hoogle) to find a function we're after. The information packed tightly into a signature is quite powerful indeed.
+这种“可能性范围的缩小”（narrowing of possibility）允许我们利用类似 [Hoogle](https://www.haskell.org/hoogle) 这样的类型签名搜索引擎去搜索我们想要的函数。类型签名所能包含的信息真的非常强大。
 
-## Free as in theorem
+## 自由定理
 
-Besides deducing implementation possibilities, this sort of reasoning gains us *free theorems*. What follows are a few random example theorems lifted directly from [Wadler's paper on the subject](http://ttic.uchicago.edu/~dreyer/course/papers/wadler.pdf).
+类型签名除了能够帮助我们推断函数可能的实现，还能够给我们带来*自由定理*（free theorems）。下面是两个直接从 [Wadler 关于此主题的论文](http://ttic.uchicago.edu/~dreyer/course/papers/wadler.pdf) 中随机选择的例子：
 
 ```js
 // head :: [a] -> a
@@ -155,17 +154,16 @@ compose(f, head) == compose(head, map(f));
 compose(map(f), filter(compose(p, f))) == compose(filter(p), map(f));
 ```
 
+不用写一行代码你也能理解这些定理，它们直接来自于类型本身。第一个例子中，等式左边说的是，先获取数组的`头部`（译者注：即第一个元素），然后对它调用函数 `f`；等式右边说的是，先对数组中的每一个元素调用 `f`，然后再取其返回结果的`头部`。这两个表达式的作用是相等的，但是后者要快得多。
 
-You don't need any code to get these theorems, they follow directly from the types. The first one says that if we get the `head` of our array, then run some function `f` on it, that is equivalent to, and incidentally, much faster than, if we first `map(f)` over every element then take the `head` of the result.
+你可能会想，呵呵这不是常识么。但根据我的调查，计算机是没有常识的。的确，计算机需要一些形式化方法来自动进行类似的代码优化；幸运的是，数学提供了这种方法，能够形式化直观的感觉，这无疑对死板的计算机逻辑非常有用。
 
-You might think, well that's just common sense. But last I checked, computers don't have common sense. Indeed, they must have a formal way to automate these kind of code optimizations. Maths has a way of formalizing the intuitive, which is helpful amidst the rigid terrain of computer logic.
+第二个例子 `filter` 也是一样。等式左边是说，先组合 `f` 和 `p` 检查哪些元素要过滤掉，然后再通过 `map` 实际调用 `f`（别忘了 `filter` 是不会改变数组中元素的，这就保证了 `a` 将保持不变）；等式右边是说，先用 `map` 调用 `f`，然后再根据 `p` 过滤元素。这两者也是相等的。
 
-The `filter` theorem is similar. It says that if we compose `f` and `p` to check which should be filtered, then actually apply the `f` via `map` (remember filter, will not transform the elements - it's signature enforces that `a` will not be touched), it will always be equivalent to mapping our `f` then filtering the result with the `p` predicate.
+以上只是两个例子，但它们传达的定理却是普适的，可以应用到所有的多态性类型签名上。你可以借助一些工具来声明 JavaScript 的重写规则，也可以直接使用 `compose` 函数来定义。总之，这么做的好处是显而易见且唾手可得的，可能性则是无限的。
 
-These are just two examples, but you can apply this reasoning to any polymorphic type signature and it will always hold. In JavaScript, there are some tools available to declare rewrite rules. One might also do this via the `compose` function itself. The fruit is low hanging and the possibilities are endless.
+## 总结
 
-## In Summary
-
-Hindley-Milner type signatures are ubiquitous in the functional world. Though they are simple to read and write, it takes time to master the technique of understanding programs through signatures alone. We will add type signatures to each line of code from here on out.
+Hindley-Milner 类型签名在函数式编程中无处不在，它们简单易读，写起来也不复杂。但仅仅凭签名就能理解整个程序还是有一定难度的，要想精通这个技能就更需要花点时间了。从这里开始，我们将给每一行代码都加上类型签名。
 
 [Chapter 8: Tupperware](ch8.md)

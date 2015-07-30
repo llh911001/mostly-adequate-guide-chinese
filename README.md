@@ -6,11 +6,11 @@
 
  * 你很有可能在日常工作中使用它
 
-    这让你有机会在实际的编程过程中学以致用，而不是在空闲时间使用一门晦涩的函数式编程语去做一些玩具性质的项目。
+    这让你有机会在实际的编程过程中学以致用，而不是在空闲时间使用一门晦涩的函数式编程语言去做一些玩具性质的项目。
 
  * 你不必从头学起就能开始编写程序
 
-    在纯函数式编程语言中，你必须使用 monad 才能打印变量或者读取 DOM 节点。这里随着学习如何净化代码库，我们可以使用一些小技俩实现上述效果。JavaScript 也更容易入门，因为它是一门混合范式的语言，你随时可以在感觉吃力的时候退回到原有的编程习惯上去。
+    在纯函数式编程语言中，你必须使用 monad 才能打印变量或者读取 DOM 节点。这里随着学习如何净化代码库，我们可以使用一些小技巧实现上述效果。JavaScript 也更容易入门，因为它是一门混合范式的语言，你随时可以在感觉吃力的时候退回到原有的编程习惯上去。
 
  * 这门语言完全有能力书写高级的函数式代码
 
@@ -52,12 +52,12 @@
 
 ## 第 2 部分
 
-* [Chapter 7: Hindley-Milner and Me](ch7.md)
-  * [What's your type?](ch7.md#whats-your-type)
-  * [Tales from the cryptic](ch7.md#tales-from-cryptic)
-  * [Narrowing the possibility](ch7.md#narrowing-the-possibility)
-  * [Free as in theorem](ch7.md#free-as-in-theorem)
-  * [In Summary](ch7.md#in-summary)
+* [第 7 章: Hindley-Milner 类型签名](ch7.md)
+  * [初识类型](ch7.md#初识类型)
+  * [神秘的传奇故事](ch7.md#神秘的传奇故事)
+  * [缩小可能性范围](ch7.md#缩小可能性范围)
+  * [自由定理](ch7.md#自由定理)
+  * [总结](ch7.md#总结)
 * [Chapter 8: Tupperware](ch8.md)
   * [The Mighty Container](ch8.md#the-mighty-container)
   * [My First Functor](ch8.md#my-first-functor)
