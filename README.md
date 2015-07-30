@@ -42,7 +42,7 @@
   * [函数饲养](ch5.md#函数饲养)
   * [pointfree](ch5.md#pointfree)
   * [debug](ch5.md#debug)
-  * [范畴论](ch5.md#范畴论)
+  * [范畴学](ch5.md#范畴学)
   * [总结](ch5.md#总结)
 * [第 6章: 示例应用](ch6.md)
   * [声明式代码](ch6.md#声明式代码)
