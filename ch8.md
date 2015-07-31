@@ -1,12 +1,12 @@
 # Tupperware
 
-## The Mighty Container
+## 强大的容器
 
 <img src="images/jar.jpg" alt="http://blog.dwinegar.com/2011/06/another-jar.html" />
 
-We've seen how to write programs which pipe data through a series of pure functions. They are declarative specifications of behaviour. But what about control flow, error handling, asynchronous actions, state and, dare I say, effects?! In this chapter, we will discover the foundation upon which all of these helpful abstractions are built.
+我们已经知道如何书写函数式的程序了，即通过管道把数据在一系列纯函数间传递的程序。我们也知道了，这些程序遵循的是声明式的行为规范。但是，控制流（control flow）、异常处理（error handling）、异步操作（asynchronous actions）和状态（state）呢？还有更棘手的作用（effects）呢？本章将对上述这些抽象概念赖以建立的基础作一番探究。
 
-First we will create a container. This container must hold any type of value; a ziplock that holds only tapioca pudding is rarely useful. It will be an object, but we will not give it properties and methods in the OO sense. No, we will treat it like a treasure chest - a special box that cradles our valuable data.
+首先我们将创建一个容器（container）。这个容器必须能够装载任意类型的值；否则的话，像只能装木薯布丁的密封塑料袋是没什么用的。这个容器将会是一个对象，但我们不会为它添加面向对象观念下的属性和方法。是的，我们将把它当作一个百宝箱——一个存放我们的宝贵数据的特殊盒子。
 
 ```js
 var Container = function(x) {
@@ -16,9 +16,9 @@ var Container = function(x) {
 Container.of = function(x) { return new Container(x); };
 ```
 
-Here is our first container. We've thoughtfully named it `Container`. We will use `Container.of` as a constructor which saves us from having to write that god awful `new` keyword all over the place. There's more to the `of` function than meets the eye, but for now, think of it as the proper way to place values into our container.
+这是我们的第一个容器，我们贴心地把它命名为 `Container`。我们将使用 `Container.of` 作为构造器（constructor），这样就不用到处去写糟糕的 `new` 关键字了，非常省心。实际上 `of` 函数的能耐并不止于此，但暂时先认为它是把值放到容器里的一种方式。
 
-Let's examine our brand new box...
+让我们来检验下这个崭新的盒子：
 
 ```js
 Container.of(3)
@@ -33,21 +33,20 @@ Container.of(Container.of({name: "yoda"}))
 //=> Container(Container({name: "yoda" }))
 ```
 
-If you are using node, you will see `{__value: x}` even though we've got ourselves a `Container(x)`. Chrome will output the type properly, but no matter; as long as we understand what a `Container` looks like, we'll be fine. In some environments you can overwrite the `inspect` method if you'd like, but we will not be so thorough. For this book, we will write the conceptual output as if we'd overwritten `inspect` as it's much more instructive than `{__value: x}` for pedagogical as well as aesthetic reasons.
+如果用的是 node，那么你会看到打印出来的是 `{__value: x}`，而不是实际值 `Container(x)`；Chrome 打印出来的是正确的。不过这并不重要，只要你理解 `Container` 是什么样的就行了。有些环境下，你也可以重写 `inspect` 方法，但我们不打算涉及这方面的知识。在本书中，出于教学和美学上的考虑，我们将把概念性的输出都写成好像 `inspect` 被重写了的样子，因为这样写的教育意义将远远大于 `{__value: x}`。
 
-Let's make a few things clear before we move on:
+在继续后面的内容之前，让我们先澄清几点：
 
-* `Container` is an object with one property. Lots of containers just hold one thing, though they aren't limited to one. We've arbitrarily named its property `__value`.
+* `Container` 是个只有一个属性的对象。尽管容器可以有不止一个的属性，但大多数的容器还是只有一个。我们很随意地把 `Container` 的这个属性命名为 `__value`。
+* `__value` 不能是某个特定的类型，不然 `Container` 就对不起它这个名字了。
 
-* The `__value` cannot be one specific type or our `Container` would hardly live up to the name.
+* 数据一旦存放到 `Container`，就会一直待在那儿。我们*可以*用 `.__value` 获取到数据，但这样做有悖初衷。
 
-* Once data goes into the `Container` it stays there. We *could* get it out by using `.__value`, but that would defeat the purpose.
+如果把容器想象成玻璃罐的话，上面这三条陈述的理由就会比较清晰了。但是暂时，请先保持耐心。
 
-The reasons we're doing this will become clear as a mason jar, but for now, bare with me.
+## 第一个 Functor
 
-## My First Functor
-
-Once our value, whatever it may be, is in the container, we'll need a way to run functions on it.
+一旦容器里有了值，不管这个值是什么，我们就需要一种方法来让别的函数能够操作它。
 
 ```js
 // (a -> b) -> Container a -> Container b
@@ -56,7 +55,7 @@ Container.prototype.map = function(f){
 }
 ```
 
-Why, it's just like Array's famous `map`, except we have `Container a` instead of `[a]`. And it works essentially the same way:
+这个 `map` 跟数组那个著名的 `map` 一样，除了前者的参数是 `Container a` 而后者是 `[a]`。它们的使用方式也几乎一致：
 
 ```js
 Container.of(2).map(function(two){ return two + 2 })
@@ -71,15 +70,15 @@ Container.of("bombs").map(concat(' away')).map(_.prop('length'))
 //=> Container(10)
 ```
 
-We can work with our value without ever having to leave the `Container`. This is a remarkable thing. Our value in the `Container` is handed to the `map` function so we can fuss with it and afterward, returned to its `Container` for safe keeping. As a result of never leaving the `Container`, we can continue to `map` away, running functions as we please. We can even change the type as we go along as demonstrated in the latter of the three examples.
+为什么要使用这样一种方法？因为我们能够在不离开 `Container` 的情况下操作容器里面的值。这是非常了不起的一件事情。`Container` 里的值传递给 `map` 函数之后，就可以任我们操作；操作结束后，为了防止意外再把它放回它所属的 `Container`。这样做的结果是，我们能连续地调用 `map`，运行任何我们想运行的函数。我们甚至还可以改变值的类型，就像上面最后一个例子中那样。
 
-Wait a minute, if we keep calling `map`, it appears to be some sort of composition! What mathematical magic is at work here? Well chaps, we've just discovered *Functors*. 
+等等，如果我们能一直调用 `map`，那它不就是个组合（composition）么！这里边是有什么数学魔法在起作用？是 *Functor*。伙计们，我们刚刚发现了 *Functor*。
 
-> A Functor is a type that implements `map` and obeys some laws
+> Functor 是实现了 `map` 函数并遵守一些特定规则的容器类型。
 
-Yes, *Functor* is simply an interface with a contract. We could have just as easily named it *Mappable*, but now, where's the *fun* in that? Functors come from category theory and we'll look at the maths in detail toward the end of the chapter, but for now, let's work on intuition and practical uses for this bizarrely named interface.
+没错，*Functor* 就是一个签了合约的接口。我们本来可以简单地把它称为 `Mappable`，但现在为时已晚，哪怕 *Functor* 一点也不 *fun*。Functor 是范畴学里的概念，我们将在本章末尾详细探索与此相关的数学知识；暂时我们先用这个名字很奇怪的接口做一些不那么理论的、实用性的练习。
 
-What reason could we possibly have for bottling up a value and using `map` to get at it? The answer reveals itself if we choose a better question: What do we gain from asking our container to apply functions for us? Well, abstraction of function application. When we `map` a function, we ask the container type to run it for us. This is a very powerful concept, indeed.
+把值装进一个容器，而且只能使用 `map` 来处理它，这么做的理由到底是什么呢？如果我们换种方式来问，答案就不言自明了：让容器自己去运用函数能给我们带来什么好处？答案是抽象，对于函数运用的抽象。当我们 `map` 一个函数的时候，我们请求容器来运行这个函数。不夸张地讲，这是一种十分强大的理念。
 
 ## Schrödinger's Maybe
 
@@ -96,12 +95,12 @@ Maybe.of = function(x) {
   return new Maybe(x);
 }
 
-Maybe.prototype.isNothing = function(f) {
+Maybe.prototype.isNothing = function() {
   return (this.__value === null || this.__value === undefined);
 }
 
 Maybe.prototype.map = function(f) {
-  return this.isNothing() ? this : Maybe.of(f(this.__value));
+  return this.isNothing() ? Maybe.of(null) : Maybe.of(f(this.__value));
 }
 ```
 
@@ -121,9 +120,9 @@ Maybe.of({name: "Dinah", age: 14}).map(_.prop("age")).map(add(10));
 //=> Maybe(24)
 ```
 
-Notice our app doesn't explode with errors as we map functions over our null values. This is because `Maybe` will take care to check for a value each and every time it applys a function.
+Notice our app doesn't explode with errors as we map functions over our null values. This is because `Maybe` will take care to check for a value each and every time it applies a function.
 
-This dot syntax is perfectly fine and functional, but for reasons mentioned in Part 1, we'd like to maintain our pointfree style. As it happens, `map` is fully equip to delegate to whatever functor it receives:
+This dot syntax is perfectly fine and functional, but for reasons mentioned in Part 1, we'd like to maintain our pointfree style. As it happens, `map` is fully equipped to delegate to whatever functor it receives:
 
 ```js
 //  map :: Functor f => (a -> b) -> f a -> f b
@@ -161,11 +160,14 @@ Sometimes a function might return a `Maybe(null)` explicitly to signal failure. 
 ```js
 //  withdraw :: Number -> Account -> Maybe(Account)
 var withdraw = curry(function(amount, account) {
-  return account.balance >= amount ? Maybe.of({balance: account.balance - amount}) : Maybe.of(null); 
+  return account.balance >= amount ?
+    Maybe.of({balance: account.balance - amount})
+    :
+    Maybe.of(null);
 });
 
 //  finishTransaction :: Account -> String
-var finishTransaction = compose(remainingBalance, updateLedger); //<-- omitted for simplicity
+var finishTransaction = compose(remainingBalance, updateLedger);
 
 //  getTwenty :: Account -> Maybe(String)
 var getTwenty = compose(map(finishTransaction), withdraw(20));
@@ -179,13 +181,13 @@ getTwenty({ balance: 10.00});
 // Maybe(null)
 ```
 
-`withdraw` will tip its nose at us and return `Maybe(null)` if we're short on cash. This function also communicates its fickleness and leaves us no choice, but to `map` everything afterwards. The difference is that the `null` was intentional here. Instead of a `Maybe(account)`, we get the `Maybe(null)` back to signal failure and our application effectively halts in it's tracks. This is important to note: if the `withdraw` fails, then `map` will sever the rest of our computation since it doesn't ever run the mapped functions, namely `finishTransaction`. This is precisely the intended behaviour as we'd prefer not to update our ledger or show a new balance if we hadn't successfully withdrawn funds.
+`withdraw` will tip its nose at us and return `Maybe(null)` if we're short on cash. This function also communicates its fickleness and leaves us no choice, but to `map` everything afterwards. The difference is that the `null` was intentional here. Instead of a `Maybe(String)`, we get the `Maybe(null)` back to signal failure and our application effectively halts in its tracks. This is important to note: if the `withdraw` fails, then `map` will sever the rest of our computation since it doesn't ever run the mapped functions, namely `finishTransaction`. This is precisely the intended behaviour as we'd prefer not to update our ledger or show a new balance if we hadn't successfully withdrawn funds.
 
 ## Releasing the value
 
 One thing people often miss is that there will always be an end of the line; some effecting function that sends JSON along, or prints to the screen, or alters our filesystem, or what have you. We cannot deliver the output with `return`, we must run some function or another to send it out into the world. We can phrase it like a Zen Buddhist koan: "If a program has no observable effect, does it even run?". Does it run correctly for its own satisfaction? I suspect it merely burns some cycles and goes back to sleep...
 
-Our application's job is to retrieve, transform, and carry that data along until it's time to say goodbye and the function which does so may be mapped, thus the value needn't leave the warm womb of it's container. Indeed, a common error is to try to remove the value from our `Maybe` one way or another as if the possible value inside will suddenly materialize and all will be forgiven. We must understand it may be a branch of code where our value is not around to live up to its destiny.  Our code, much like Schrödinger's cat, is in two states at once and should maintain that fact until the final function. This gives our code a linear flow despite the logical branching.
+Our application's job is to retrieve, transform, and carry that data along until it's time to say goodbye and the function which does so may be mapped, thus the value needn't leave the warm womb of its container. Indeed, a common error is to try to remove the value from our `Maybe` one way or another as if the possible value inside will suddenly materialize and all will be forgiven. We must understand it may be a branch of code where our value is not around to live up to its destiny.  Our code, much like Schrödinger's cat, is in two states at once and should maintain that fact until the final function. This gives our code a linear flow despite the logical branching.
 
 There is, however, an escape hatch. If we would rather return a custom value and continue on, we can use a little helper called `maybe`.
 
@@ -196,7 +198,9 @@ var maybe = curry(function(x, f, m) {
 });
 
 //  getTwenty :: Account -> String
-var getTwenty = compose(maybe("You're broke!", finishTransaction), withdraw(20));
+var getTwenty = compose(
+  maybe("You're broke!", finishTransaction), withdraw(20)
+);
 
 
 getTwenty({ balance: 200.00});
@@ -213,7 +217,7 @@ The introduction of `Maybe` can cause some initial discomfort. Users of Swift an
 Writing unsafe software is like taking care to paint each egg with pastels before hurling it into traffic; like building a retirement home with materials warned against by three little pigs. It will do us well to put some safety into our functions and `Maybe` helps us do just that.
 
 
-## Pure Error Handling 
+## Pure Error Handling
 
 <img src="images/fists.jpg" alt="pick a hand... need a reference" />
 
@@ -299,7 +303,7 @@ zoltar({birthdate: 'balloons!'});
 // Left("Birth date could not be parsed")
 ```
 
-When the `birthdate` is valid, the program outputs it's mystical fortune to the screen for us to behold. Otherwise, we are handed a `Left` with the error message plain as day though still tucked away in its container. That acts just as if we'd thrown an error, but in a calm, mild manner fashion as opposed to losing its temper and screaming like a child when something goes wrong.
+When the `birthdate` is valid, the program outputs its mystical fortune to the screen for us to behold. Otherwise, we are handed a `Left` with the error message plain as day though still tucked away in its container. That acts just as if we'd thrown an error, but in a calm, mild manner fashion as opposed to losing its temper and screaming like a child when something goes wrong.
 
 In this example, we are logically branching our control flow depending on the validity of the birth date, yet it reads as one linear motion from right to left rather than climbing through the curly braces of a conditional statement. Usually, we'd move the `console.log` out of our `zoltar` function and `map` it at the time of calling, but it's helpful to see how the `Right` branch differs. We use `_` in the right branch's type signature to indicate it's a value that should be ignored[^In some browsers you have to use `console.log.bind(console)` to use it first class].
 
@@ -338,7 +342,7 @@ Finally, a use for that mysterious `id` function. It simply parrots back the val
 
 <img src="images/dominoes.jpg" alt="dominoes.. need a reference" />
 
-In our chapter about purity we saw a peculiar example of a pure function. This function contained a side-effect, but we dubbed it pure by wrapping it's action in another function. Here's another example of this:
+In our chapter about purity we saw a peculiar example of a pure function. This function contained a side-effect, but we dubbed it pure by wrapping its action in another function. Here's another example of this:
 
 ```js
 //  getFromStorage :: String -> (_ -> String)
@@ -397,7 +401,7 @@ Here, `io_window` is an actual `IO` that we can `map` over straight away, wherea
 
 Take a moment to channel your functor intuition. If we see past the implementation details, we should feel right at home mapping over any container no matter its quirks or idiosyncrasies. We have the functor laws, which we will explore toward the end of the chapter, to thank for this pseudo-psychic power. At any rate, we can finally play with impure values without sacrificing our precious purity.
 
-Now, we've caged the beast, but we'll still have to set it free at some point. Mapping over our `IO` has built up a mighty impure computation and running it is surely going to disturb the peace. So where and when can we pull the trigger? Is it even possible to run our `IO` and still wear white at our wedding? The answer is yes, if we put the onus the calling code. Our pure code, despite the nefarious plotting and scheming, maintains its innocence and it's the caller who gets burdened with the responsibility of actually running the effects. Let's see an example to make this concrete.
+Now, we've caged the beast, but we'll still have to set it free at some point. Mapping over our `IO` has built up a mighty impure computation and running it is surely going to disturb the peace. So where and when can we pull the trigger? Is it even possible to run our `IO` and still wear white at our wedding? The answer is yes, if we put the onus on the calling code. Our pure code, despite the nefarious plotting and scheming, maintains its innocence and it's the caller who gets burdened with the responsibility of actually running the effects. Let's see an example to make this concrete.
 
 ```js
 
@@ -529,30 +533,32 @@ Goodness, would you look at that, `Task` has also swallowed up `Either`! It must
 Even with `Task`, our `IO` and `Either` functors are not out of a job. Bear with me on a quick example that leans toward the more complex and hypothetical side, but is useful for illustrative purposes.
 
 ```js
-// Postgres.connect :: Url -> DbConnection
+// Postgres.connect :: Url -> IO DbConnection
 // runQuery :: DbConnection -> ResultSet
-
+// readFile :: String -> Task Error String
 
 // Pure application
 //=====================
 
-//  dbUrl :: Config -> Either(Error, Url)
+//  dbUrl :: Config -> Either Error Url
 var dbUrl = function(c) {
   return (c.uname && c.pass && c.host && c.db)
     ? Right.of("db:pg://"+c.uname+":"+c.pass+"@"+c.host+"5432/"+c.db)
     : Left.of(Error("Invalid config!"));
 }
 
-//  connectDb :: Config -> Either(Error, IO(DbConnection))
+//  connectDb :: Config -> Either Error (IO DbConnection)
 var connectDb = compose(map(Postgres.connect), dbUrl);
 
-//  getConfig :: Filename -> Task(Error, Either(Error, IO(DbConnection)))
+//  getConfig :: Filename -> Task Error (Either Error (IO DbConnection))
 var getConfig = compose(map(compose(connectDB, JSON.parse)), readFile);
 
 
 // Impure calling code
 //=====================
-getConfig("db.json").fork(logErr("couldn't read file"), either(console.log, map(runQuery)));
+getConfig("db.json").fork(
+  logErr("couldn't read file"), either(console.log, map(runQuery))
+);
 ```
 
 In this example, we still make use of `Either` and `IO` from within the success branch of `readFile`. `Task` takes care of the impurities of reading a file asynchronously, but we still deal with validating the config with `Either` and wrangling the db connection with `IO`. So you see, we're still in business for all things synchronous.
@@ -612,7 +618,7 @@ We can also visualize the mapping of a morphism and its corresponding objects wi
 
 <img src="images/functormap.png" alt="functor diagram" />
 
-In addition to visualizing the mapped morphism from one category to another under the functor `F`, we see that the diagram commutes, which is to say, if you follow the arrows each route produces the same result. The different routes means different behavior, but we always end at the same type. This formalism gives us principled ways to reason about our code - we can boldly apply formulas without having to parse and examine each individual scenario. Let's take a concrete example. 
+In addition to visualizing the mapped morphism from one category to another under the functor `F`, we see that the diagram commutes, which is to say, if you follow the arrows each route produces the same result. The different routes means different behavior, but we always end at the same type. This formalism gives us principled ways to reason about our code - we can boldly apply formulas without having to parse and examine each individual scenario. Let's take a concrete example.
 
 ```js
 //  topRoute :: String -> Maybe(String)
@@ -650,7 +656,7 @@ What we have here with `nested` is a future array of elements that might be erro
 var Compose = function(f_g_x){
   this.getCompose = f_g_x;
 }
- 
+
 Compose.prototype.map = function(f){
   return new Compose(map(map(f), this.getCompose));
 }
@@ -686,7 +692,8 @@ var _ = require('ramda');
 
 // Exercise 1
 // ==========
-// Use _.add(x,y) and _.map(f,x) to make a function that increments a value inside a functor
+// Use _.add(x,y) and _.map(f,x) to make a function that increments a value
+// inside a functor
 
 var ex1 = undefined
 
@@ -742,7 +749,8 @@ var ex5 = undefined
 
 // Exercise 6
 // ==========
-// Write a function that uses checkActive() and showWelcome() to grant access or return the error
+// Write a function that uses checkActive() and showWelcome() to grant access
+// or return the error
 
 var showWelcome = _.compose(_.add( "Welcome "), _.prop('name'))
 
@@ -756,7 +764,8 @@ var ex6 = undefined
 
 // Exercise 7
 // ==========
-// Write a validation function that checks for a length > 3. It should return Right(x) if it is greater than 3 and Left("You need > 3") otherwise
+// Write a validation function that checks for a length > 3. It should return
+// Right(x) if it is greater than 3 and Left("You need > 3") otherwise
 
 var ex7 = function(x) {
   return undefined // <--- write me. (don't be pointfree)
@@ -766,7 +775,9 @@ var ex7 = function(x) {
 
 // Exercise 8
 // ==========
-// Use ex7 above and Either as a functor to save the user if they are valid or return the error message string. Remember either's two arguments must return the same type.
+// Use ex7 above and Either as a functor to save the user if they are valid or
+// return the error message string. Remember either's two arguments must return
+// the same type.
 
 var save = function(x){
   return new IO(function(){
