@@ -1,4 +1,6 @@
-# Tupperware
+# 特百惠
+
+（译者注：特百惠美国家居用品品牌，代表产品是塑料容器。）
 
 ## 强大的容器
 
@@ -335,7 +337,9 @@ zoltar({birthdate: 'balloons!'});
 
 终于用了一回那个神秘的 `id` 函数！其实它就是简单地复制了 `Left` 里的错误消息，然后把这个值传给 `console.log` 而已。通过强制在 `getAge` 内部进行错误处理，我们的算命程序更加健壮了。我们要么告诉用户一个残酷的事实并像算命师那样跟他击掌，要么就继续运行程序。好了，现在我们已经准备好去学习一个完全不同类型的 functor 了。
 
-## Old McDonald had Effects...
+## 王老先生有作用...
+
+（译者注：原标题是“Old McDonald had Effects...”，源于美国儿歌“Old McDonald Had a Farm”。）
 
 <img src="images/dominoes.jpg" alt="dominoes.. need a reference" />
 
@@ -770,7 +774,7 @@ var ex7 = function(x) {
 // 练习 8
 // ==========
 // 使用练习 7 的 ex7 和 Either 构造一个 functor，如果一个 user 合法就保存它，否则
-// 返回错误消息。别忘了 Either 的两个参数必须返回同一类型的数据。
+// 返回错误消息。别忘了 either 的两个参数必须返回同一类型的数据。
 
 var save = function(x){
   return new IO(function(){

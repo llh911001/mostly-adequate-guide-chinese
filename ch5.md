@@ -150,7 +150,7 @@ latin(["frog", "eyes"]);
 var latin = compose(map(angry), reverse);
 
 latin(["frog", "eyes"]);
-// ["SEYE!", "GORF!"])
+// ["EYES!", "FROG!"])
 ```
 
 如果在 debug 组合的时候遇到了困难，那么可以使用下面这个实用的，但是不纯的 `trace` 函数来追踪代码执行情况。

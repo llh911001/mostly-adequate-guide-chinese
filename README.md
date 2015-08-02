@@ -36,7 +36,7 @@
   * [总结](ch3.md#总结)
 * [第 4 章: 柯里化（curry）](ch4.md)
   * [不可或缺的 curry](ch4.md#不可或缺的-curry)
-  * [不仅仅是双关语／咖喱](ch4.md#不仅仅是双关语／咖喱)
+  * [不仅仅是双关语／咖喱](ch4.md#不仅仅是双关语咖喱)
   * [总结](ch4.md#总结)
 * [第 5 章: 代码组合（compose）](ch5.md)
   * [函数饲养](ch5.md#函数饲养)
@@ -58,12 +58,12 @@
   * [缩小可能性范围](ch7.md#缩小可能性范围)
   * [自由定理](ch7.md#自由定理)
   * [总结](ch7.md#总结)
-* [第 8 章: Tupperware](ch8.md)
+* [第 8 章: 特百惠](ch8.md)
   * [强大的容器](ch8.md#强大的容器)
   * [第一个 functor](ch8.md#第一个-functor)
   * [薛定谔的 Maybe](ch8.md#薛定谔的-maybe)
   * [“纯”错误处理](ch8.md#“纯”错误处理)
-  * [Old McDonald had Effects…](ch8.md#old-mcdonald-had-effects)
+  * [老王先生有作用...](ch8.md#老王先生有作用...)
   * [异步任务](ch8.md#异步任务)
   * [一点理论](ch8.md#一点理论)
   * [总结](ch8.md#总结)
@@ -76,10 +76,9 @@
 
 
 
-# Plans for the future
+# 未来计划
 
-* Part 1 is a guide to the basics. I'm updating as I find errors since this is the initial draft. Feel free to help!
-* Part 2 will address type classes like functors and monads all the way through to traversable. I hope to squeeze in transformers and a pure application.
-* Part 3 will start to dance the fine line between practical programming and academic absurdity. We'll look at comonads, f-algebras, free monads, yoneda, and other categorical constructs.
-
+* 第 1 部分是基础知识。这是初版草稿，所以我会及时更正发现的的错误。欢迎提供帮助！
+* 第 2 部分讲述类型类（type class），比如 functor 和 monad，最后会讲到到 traversable。我希望能塞进来一些 monad transformer 相关的知识，再写一个纯函数的应用。
+* 第 3 部分将开始游走于编程实践与学院学究之间。我们将学习 comonad、f-algebra、free monad、yoneda 以及其他一些范畴学概念。
 
