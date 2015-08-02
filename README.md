@@ -61,7 +61,7 @@
 * [第 8 章: Tupperware](ch8.md)
   * [强大的容器](ch8.md#强大的容器)
   * [第一个 Functor](ch8.md#第一个-Functor)
-  * [Schrödinger’s Maybe](ch8.md#schrodingers-maybe)
+  * [薛定谔的 Maybe](ch8.md#薛定谔的-Maybe)
   * [Pure Error Handling](ch8.md#pure-error-handling)
   * [Old McDonald had Effects…](ch8.md#old-mcdonald-had-effects)
   * [Asynchronous Tasks](ch8.md#asynchronous-tasks)
