@@ -122,11 +122,17 @@ var allTheChildren = function(elements) {
 
 curry 函数用起来非常得心应手，每天使用它对我来说简直就是一种享受；它堪称手头必备工具，能够让函数式编程不那么繁琐和沉闷。通过简单地传递几个参数，我们就能动态创建实用的新函数；而且还能带来一个额外好处，那就是保留了数学的函数定义，尽管参数不止一个。
 
-下一章我们将学习另一个重要的工具：`compose`。
+下一章我们将学习另一个重要的工具：`组合`（compose）。
 
 [第 5 章: 代码组合（compose）](ch5.md)
 
 ## 练习
+
+开始练习之前先说明一下，我们将默认使用 [ramda](http://ramdajs.com) 这个库来把函数转为 curry 函数。或者你也可以选择由 losash 的作者编写和维护的 [lodash-fp](https://github.com/lodash/lodash-fp)。这两个库都很好用，选择哪一个就看你自己的喜好了。
+
+完成练习你还可以对自己的代码做[单元测试](https://github.com/llh911001/mostly-adequate-guide-chinese/tree/master/code/part1_exercises)，或者把代码拷贝到一个 REPL 里运行看看。
+
+这些练习的答案可以在[本书仓库](https://github.com/llh911001/mostly-adequate-guide-chinese/tree/master/code/part1_exercises/answers)中找到。
 
 ```js
 var _ = require('ramda');
