@@ -24,7 +24,7 @@ capitalize("smurf");
 
 这里，`capitalize` 接受一个 `String` 并返回了一个 `String`。先别管实现，我们感兴趣的是它的类型签名。
 
-在 Hindley-Milner 系统中，函数都写成类似 `a ->b` 这个样子，其中 `a` 和`b` 是任意类型的变量。因此，`capitalize` 函数的类型签名可以理解为“一个接受 `String` 返回 `String` 的函数”。换句话说，它接受一个 `String` 类型作为输入，并返回一个 `String` 类型的输出。
+在 Hindley-Milner 系统中，函数都写成类似 `a -> b` 这个样子，其中 `a` 和`b` 是任意类型的变量。因此，`capitalize` 函数的类型签名可以理解为“一个接受 `String` 返回 `String` 的函数”。换句话说，它接受一个 `String` 类型作为输入，并返回一个 `String` 类型的输出。
 
 让我们再来看一些函数签名：
 
