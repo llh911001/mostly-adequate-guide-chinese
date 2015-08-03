@@ -19,7 +19,7 @@ for (i = 0; i < cars.length; i++) {
 
 
 // 声明式
-cars.map(function(car){ return car.make; });
+var makes = cars.map(function(car){ return car.make; });
 ```
 
 命令式的循环要求你必须先初始化一个数组，执行完这个初始化语句之后，解释器才继续执行后面的代码。然后再直接迭代 `cars` 列表，手动增加计数器，把各种零零散散的东西都展示出来...实在是直白得有些粗俗。
@@ -114,7 +114,7 @@ var Impure = {
 
 ```js
 var url = function (term) {
-  return 'http://api.flickr.com/services/feeds/photos_public.gne?tags=' + term + '&format=json&jsoncallback=?';
+  return 'https://api.flickr.com/services/feeds/photos_public.gne?tags=' + term + '&format=json&jsoncallback=?';
 };
 ```
 
@@ -132,7 +132,7 @@ app("cats");
 
 <img src="images/console_ss.png"/>
 
-我们需要从这个 json 里构造图片，看起来 src 都在 `items` 数组中的每个 `media` 对象的 `m` 属性上。flickr 的 api 团队太棒了，`m` 正合我意。
+我们需要从这个 json 里构造图片，看起来 src 都在 `items` 数组中的每个 `media` 对象的 `m` 属性上。
 
 不管怎样，我们可以使用 ramda 的一个通用 getter 函数 `_.prop()` 来获取这些嵌套的属性。不过为了让你明白这个函数做了什么事情，我们自己实现一个 prop 看看：
 
@@ -219,7 +219,7 @@ require([
     ////////////////////////////////////////////
 
     var url = function (t) {
-      return 'http://api.flickr.com/services/feeds/photos_public.gne?tags=' + t + '&format=json&jsoncallback=?';
+      return 'https://api.flickr.com/services/feeds/photos_public.gne?tags=' + t + '&format=json&jsoncallback=?';
     };
 
     var mediaUrl = _.compose(_.prop('m'), _.prop('media'));
@@ -289,4 +289,4 @@ var images = _.compose(_.map(mediaToImg), _.prop('items'));
 
 我们已经见识到如何在一个虽然小但却真实的应用中运用我们的新技能了，也已经使用过函数式这个“数学框架”来推导和重构代码了。但是异常处理以及代码分支呢？如何让整个应用都是函数式的，而不仅仅是把破坏性的函数放到命名空间下？如何让应用更安全更富有表现力？这些都是本书第 2 部分将要解决的问题。
 
-[Chapter 7: Hindley-Milner and Me](ch7.md)
+[第 7 章: Hindley-Milner 类型签名](ch7.md)
