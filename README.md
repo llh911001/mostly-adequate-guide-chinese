@@ -1,4 +1,10 @@
-<img src="images/cover.png"/>
+<!-- <img src="images/cover.png"/> -->
+
+# 关于中文版
+
+这是 *[mostly-adequate-guide](https://github.com/DrBoolean/mostly-adequate-guide)* 的中文版。非常感谢 Franklin Risby 教授为我们写了这么一本深入浅出的函数式编程指南。
+
+原书是初版草稿，这本中文版也是初版草稿，所以任何错误都会及时更新。如果发现错漏之处，欢迎大家不吝[指正](https://github.com/llh911001/mostly-adequate-guide-chinese/issues/new)。
 
 # 关于本书
 
