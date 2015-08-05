@@ -67,12 +67,12 @@
   * [异步任务](ch8.md#异步任务)
   * [一点理论](ch8.md#一点理论)
   * [总结](ch8.md#总结)
-* [Chapter 9: Monadic Onions](ch9.md)
-  * [Pointy Functor Factory](ch9.md#pointy-functor-factory)
-  * [Mixing Metaphors](ch9.md#mixing-metaphors)
-  * [My chain hits my chest](ch9.md#my-chain-hits-my-chest)
-  * [Theory](ch9.md#theory)
-  * [In Summary](ch9.md#in-summary)
+* [第 9 章: monad](ch9.md)
+  * [pointed functor](ch9.md#pointed-functor)
+  * [混合比喻](ch9.md#混合比喻)
+  * [chain 函数](ch9.md#chain-函数)
+  * [理论](ch9.md#理论)
+  * [总结](ch9.md#总结)
 
 
 

@@ -1,12 +1,12 @@
-# Monadic Onions
+# monad
 
-## Pointy Functor Factory
+## pointed functor
 
-Before we go any further, I have a confession to make: I haven't been fully honest about that `of` method we've placed on each of our types. Turns out, it is not there to avoid the `new` keyword, but rather to place values in what's called a *default minimal context*. Yes, `of` does not actually take the place of a constructor - it is part of an important interface we call *Pointed*.
+在继续后面的内容之前，我得向你坦白一件事：关于我们先前创建的容器类型上的 `of` 方法，我并没有说出它的全部实情。真实情况是，`of` 方法不是用来避免使用 `new` 关键字的，而是用来把值放到*默认最小化上下文*（default minimal context）中的。是的，`of` 没有真正地取代构造器——它是一个我们称之为 *pointed* 的重要接口的一部分。
 
-> A *pointed functor* is a functor with an `of` method
+> *pointed functor* 是实现了 `of` 方法的 functor。
 
-What's important here is the ability to drop any value in our type and start mapping away.
+这里的关键是把任意值丢到容器里然后开始到处使用 `map` 的能力。
 
 ```js
 IO.of("tetris").map(concat(" master"));
@@ -24,20 +24,19 @@ Either.of("The past, present and future walk into a bar...").map(
 // Right("The past, present and future walk into a bar...it was tense.")
 ```
 
-If you recall, `IO` and `Task`'s constructors expect a function as their argument, but `Maybe` and `Either` do not. The motivation for this interface is a common, consistent way to place a value into our functor without the complexities and specific demands of constructors. The term "default minimal context" lacks precision, yet captures the idea well: we'd like to lift any value in our type and `map` away per usual with the expected behaviour of whichever functor.
+如果你还记得，`IO` 和 `Task` 的构造器接受一个函数作为参数，而 `Maybe` 和 `Either` 的构造器可以接受任意值。实现这种接口的动机是，我们希望能有一种通用、一致的方式往 functor 里填值，而且中间不会涉及到复杂性，也不会涉及到对构造器的特定要求。“默认最小化上下文”这个术语可能不够精确，但是却很好地传达了这种理念：我们希望容器类型里的任意值都能发生 `lift`，然后像所有的 functor 那样再 `map` 出去。
 
-One important correction I must make at this point, pun intended, is that `Left.of` doesn't make any sense. Each functor must have one way to place a value inside it and with `Either`, that's `new Right(x)`. We define `of` using `Right` because if our type *can* `map`, it *should* `map`. Looking at the examples above, we should have an intuition about how `of` will usually work and `Left` breaks that mold.
+有件很重要的事我必须得在这里纠正，那就是，`Left.of` 没有任何道理可言，包括它的双关语也是。每个 functor 都要有一种把值放进去的方式，对 `Either` 来说，它的方式就是 `new Right(x)`。我们为 `Right` 定义 `of` 的原因是，如果一个类型容器*可以* `map`，那它就*应该* `map`。看上面的例子，我们应该会对 `of` 通常的工作模式有一个直观的印象，而 `Left` 破坏了这种模式。
 
-You may have heard of functions such as `pure`, `point`, `unit`, and `return`. These are various monikers for our `of` method, international function of mystery. `of` will become important when we start using monads because, as we will see, it's our responsibility to place values back into the type manually.
+你可能已经听说过 `pure`、`point`、`unit` 和 `return` 之类的函数了，它们都是 `of` 这个史上最神秘函数的不同名称（译者注：此处原文是“international function of mystery”，源自恶搞《007》的电影 *Austin Powers: International Man of Mystery*，中文译名《王牌大贱谍》）。`of` 将在我们开始使用 monad 的时候显示其重要性，因为后面你会看到，手动把值放回容器是我们自己的责任。
 
-To avoid the `new` keyword, there are several standard JavaScript tricks or libraries so let's use them and use `of` like a responsible adult from here on out. I recommend using functor instances from `folktale`, `ramda` or `fantasy-land` as they provide the correct `of` method as well as nice constructors that don't rely on `new`.
+要避免 `new` 关键字，可以借助一些标准的 JavaScript 技巧或者类库达到目的。所以从这里开始，我们就利用这些技巧或类库，像一个负责任的成年人那样用 `of`。我推荐使用 `folktale`、`ramda` 或 `fantasy-land` 里的 functor 实例，因为它们同时提供了正确的 `of` 方法和不依赖 `new` 的构造器。
 
-
-## Mixing Metaphors
+## 混合比喻
 
 <img src="images/onion.png" alt="http://www.organicchemistry.com/wp-content/uploads/BPOCchapter6-6htm-41.png" />
 
-You see, in addition to space burritos (if you've heard the rumors), monads are like onions. Allow me to demonstrate with a common situation:
+你看，除了太空墨西哥卷（如果你听说过这个传言的话）（译者注：此处的传言似乎是说一个叫 Chris Hadfield 的宇航员在国际空间站做墨西哥卷的事，[视频链接](https://www.youtube.com/watch?v=f8-UKqGZ_hs)），monad 还被喻为洋葱。让我以一个常见的场景来说明这点：
 
 ```js
 //  cat :: IO (IO String)
@@ -47,7 +46,7 @@ cat(".git/config")
 // IO(IO("[core]\nrepositoryformatversion = 0\n"))
 ```
 
-What we've got here is an `IO` trapped inside another `IO`. To work with it, we must `map(map(f))` and to observe the effect, we must `unsafePerformIO().unsafePerformIO()`. While it is nice to see that we have two effects packaged up and ready to go in our application, it feels a bit like working in two hazmat suits and we end up with an uncomfortably awkward API. Let's look at another situation:
+这里我们得到的是一个 `IO`，只不过它陷进了另一个 `IO`。要想使用它，我们必须这样调用： `map(map(f))`；要想观察它的作用，必须这样： `unsafePerformIO().unsafePerformIO()`。尽管在应用中把这两个作用打包在一起没什么不好的，但总感觉像是在穿着两套防护服工作，结果就形成一个稀奇古怪的 API。我们再来看另一种情况：
 
 ```js
 //  safeProp :: Key -> {Key: a} -> Maybe a
@@ -69,9 +68,9 @@ firstAddressStreet(
 // Maybe(Maybe(Maybe({name: 'Mulburry', number: 8402})))
 ```
 
-Again, we see this nested functor situation where it's neat to see there are three possible failures in our function, but it's a little presumptuous to expect a caller to `map` three times to get at the value - we'd only just met. This pattern will arise time and time again and it is the primary situation where we'll need to shine the mighty monad symbol into the night sky.
+这里的 functor 同样是嵌套的，函数中三个可能的失败都用了 `Maybe` 做预防也很干净整洁，但是要让最后的调用者调用三次 `map` 才能取到值未免也太无礼了点——我们和它才刚刚见面而已。这种嵌套 functor 的模式会时不时地出现，而且是 monad 的主要使用场景。
 
-I said monads are like onions because tears well up as we peel back layer of the nested functor with `map` to get at the inner value. We can dry our eyes, take a deep breath, and use a method called `join`.
+我说过 monad 像洋葱，那是因为我们用 `map` 剥开嵌套的 functor 以获取它里面的值的过程中，就像剥洋葱一样会流泪。不过，我们可以擦干眼泪，做个深呼吸，然后用一个叫 `join` 的方法。
 
 ```js
 var mmo = Maybe.of(Maybe.of("nunchucks"));
@@ -93,11 +92,11 @@ ttt.join()
 // Task(Task("sewers"))
 ```
 
-If we have two layers of the same type, we can smash them together with `join`. This ability to join together, this functor matrimony, is what makes a monad a monad. Let's inch toward the full definition with something a little more accurate:
+如果有两层相同类型的嵌套，那么我们就可以用 `join` 把它们压扁到一块去。这种结合的能力，functor 之间的联姻，就是 monad 之所以成为 monad 的原因。让我们来看看更精确的完整定义：
 
-> Monads are pointed functors that can flatten
+> monad 是可以变扁的 pointed functor。
 
-Any functor which defines a `join` method, has an `of` method, and obeys a few laws is a monad. Defining `join` is not too difficult so let's do so for `Maybe`:
+一个 functor，只要它定义个了一个 `join` 方法和一个 `of` 方法，并遵守一些定律，那么它就是一个 monad。`join` 的实现并不太复杂，我们来为 `Maybe` 定义一个：
 
 ```js
 Maybe.prototype.join = function() {
@@ -105,9 +104,9 @@ Maybe.prototype.join = function() {
 }
 ```
 
-There, simple as consuming one's twin in the womb. If we have a `Maybe(Maybe(x))` then `.__value` will just remove the unnecessary extra layer and we can safely `map` from there. Otherwise, we'll just have the one `Maybe` as nothing would have been mapped in the first place.
+看，就像子宫里双胞胎中的一个吃掉另一个那么简单。如果我们有一个 `Maybe(Maybe(x))`，那么 `.__value` 将会移除多余的一层，然后我们就能安心地从那开始进行 `map`。要不然，我们就将会只有一个 `Maybe`，因为从一开始就没有任何东西被 `map` 调用。
 
-Now that we have a `join` method, let's sprinkle some magic monad dust over the `firstAddressStreet` example and see it in action:
+既然已经有了 `join` 方法，我们把 monad 魔法作用到 `firstAddressStreet` 例子上，看看它是如何工作的：
 
 ```js
 //  join :: Monad m => m (m a) -> m a
@@ -124,7 +123,7 @@ firstAddressStreet(
 // Maybe({name: 'Mulburry', number: 8402})
 ```
 
-We added `join` wherever we encountered the nested `Maybe`'s to keep them from getting out of hand. Let's do the same with `IO` to give us a feel for that.
+只要遇到嵌套的 `Maybe`，我们就加一个 `join`，防止它们从手里溜走。我们对 `IO` 也这么做试试看，感受下这种感觉。
 
 ```js
 IO.prototype.join = function() {
@@ -132,7 +131,7 @@ IO.prototype.join = function() {
 }
 ```
 
-Again, we simply remove one layer. Mind you, we have not thrown out purity, but merely removed one layer of excess shrink wrap.
+同样是简单地移除了一层容器。注意，我们还没有提及纯度的问题，仅仅是移除过渡紧缩的包裹中的一层而已。
 
 ```js
 //  log :: a -> IO a
@@ -161,22 +160,24 @@ applyPreferences('preferences').unsafePerformIO();
 // <div style="background-color: 'green'"/>
 ```
 
-`getItem` returns an `IO String` so we `map` to parse it. Both `log` and `setStyle` return `IO`'s themselves so we must `join` to keep our nesting under control.
+`getItem` 返回了一个 `IO String`，所以我们直接用 `map` 来解析它。`log` 和 `setStyle` 返回的都是 `IO`，所以我们必须使用 `join` 来保证这里边的嵌套处于控制之中。
 
-## My chain hits my chest
+## chain 函数
+
+（译者注：此处标题原文是“My chain hits my chest”，是英国歌手 M.I.A 单曲 *Bad Girls* 的一句歌词。据说这首歌有体现女权主义。）
 
 <img src="images/chain.jpg" alt="chain" />
 
-You might have noticed a pattern. We often end up calling `join` right after a `map`. Let's abstract this into a function called `chain`.
+你可能已经从上面的例子中注意到这种模式了：我们总是在紧跟着 `map` 的后面调用 `join`。让我们把这个行为抽象到一个叫做 `chain` 的函数里。
 
 ```js
 //  chain :: Monad m => (a -> m b) -> m a -> m b
 var chain = curry(function(f, m){
-  return m.map(f).join(); // or compose(join, map(f))(m)
+  return m.map(f).join(); // 或者 compose(join, map(f))(m)
 });
 ```
 
-We'll just bundle up this map/join combo into a single function. If you've read about monads previously, you might have seen `chain` called `>>=` (pronounced bind) or `flatMap` which are all aliases for same concept. I personally think `flatMap` is the most accurate name, but we'll stick with `chain` as it's the widely accepted name in JS. Let's refactor the two examples above with `chain`:
+这里仅仅是把 map/join 套餐打包到一个单独的函数中。如果你之前了解过 monad，那你可能已经看出来 `chain` 叫做 `>>=`（读作 bind）或者 `flatMap`；都是同一个概念的不同名称罢了。我个人认为 `flatMap` 是最准确的名称，但我们还是坚持使用 `chain`，因为它是 JS 里接受程度最高的一个。我们用 `chain` 重构下上面两个例子：
 
 ```js
 // map/join
@@ -202,7 +203,7 @@ var applyPreferences = compose(
 );
 ```
 
-I swapped out any `map/join` with our new `chain` function to tidy things up a bit. Cleanliness is nice and all, but there's more to `chain` than meets the eye - it's more of tornado than a vacuum. Because `chain` effortlessly nests effects, we can capture both *sequence* and *variable assignment* in a purely functional way.
+我把所有的 `map/join` 都替换为了 `chain`，这样代码就显得整洁了些。整洁固然是好事，但 `chain` 的能力却不止于此——它更多的是龙卷风而不是吸尘器。因为 `chain` 可以轻松地嵌套作用，我们就能以一种纯函数式的方式来表示 *（序列）sequence* 和 *（变量赋值）variable assignment*。
 
 ```js
 // getJSON :: Url -> Params -> Task JSON
@@ -236,11 +237,11 @@ Maybe.of(null).chain(safeProp('address')).chain(safeProp('street'));
 // Maybe(null);
 ```
 
-We could have written these examples with `compose`, but we'd need a few helper functions and this style lends itself to explicit variable assignment via closure anyhow. Instead we're using the infix version of `chain` which, incidentally, can be derived from `map` and `join` for any type automatically: `t.prototype.chain = function(f) { return this.map(f).join(); }`. We can also define `chain` manually if we'd like a false sense of performance, though we must take care to maintain the correct functionality - that is, it must equal `map` followed by `join`. An interesting fact is that we can derive `map` for free if we've created `chain` simply by bottling the value back up when we're finished with `of`. With `chain`, we can also define `join` as `chain(id)`. It may feel like playing Texas Hold em' with a rhinestone magician in that I'm just pulling things out of my behind, but, as with most mathematics, all of these principled constructs are interrelated. Lots of these derivations are mentioned in the [fantasyland](https://github.com/fantasyland/fantasy-land) repo, which is the official specification for algebraic data types in JavaScript.
+我们本来可以用 `compose` 写上面的例子，但这将需要几个帮助函数，而且这种风格还是难免要向明确的变量赋值屈服。相反，我们使用了插入式的 `chain`。顺便说一下，`chain` 可以自动从任意类型的 `map` 和 `join` 衍生出来，就像这样：`t.prototype.chain = function(f) { return this.map(f).join(); }`。如果手动定义 `chain` 能让你觉得性能会好点的话（实际上并不会），我们也可以手动定义它，尽管还必须要费力保证函数功能的正确性——也就是说，它必须与紧接着后面有 `join` 的 `map` 相等。如果 `chain` 是简单地通过结束调用 `of` 后把值放回容器这种方式定义的，那么就会造成一个有趣的后果，即我们可以从 `chain` 那里衍生出一个 `map`。同样地，我们还可以用 `chain(id)` 定义 `join`。听起来好像是在跟魔术师玩德州扑克，魔术师想要什么牌就有什么牌；但是就像大部分的数学理论一样，所有这些原则性的结构都是相互关联的。[fantasyland](https://github.com/fantasyland/fantasy-land) 仓库中提到了许多上述衍生概念，这个仓库也是 JavaScript 官方的代数数据结构（algebraic data types）标准。
 
-Anyways, let's get to the examples above. In the first example, we see two `Task`'s chained in a sequence of asynchronous actions - first it retrieves the `user`, then it finds the friends with that user's id. We use `chain` to avoid a `Task(Task([Friend]))` situation.
+好了，我们来看上面的例子。第一个例子中，可以看到两个 `Task` 通过 `chain` 连接形成了一个异步操作的序列——它先获取 `user`，然后用 `user.id` 查找 `user` 的 `friends`。`chain` 避免了 `Task(Task([Friend]))` 这种情况。
 
-Next, we use `querySelector` to find a few different inputs and create a welcoming message. Notice how we have access to both `uname` and `email` at the innermost function - this is functional variable assignment at its finest. Since `IO` is graciously lending us its value, we are in charge of putting it back how we found it - we wouldn't want to break its trust (and our program). `IO.of` is the perfect tool for the job and it's why Pointed is an important prerequisite to the Monad interface. However, we could choose to `map` as that would also return the correct type:
+第二个例子是用 `querySelector` 查找几个 input 然后创建一条欢迎信息。注意看我们是如何在最内层的函数里访问 `uname` 和 `email` 的——这是函数式变量赋值的绝佳表现。因为 `IO` 大方地把它的值借给了我们，我们也要负起以同样方式把值放回去的责任——不能辜负它的信任（还有整个程序的信任）。`IO.of` 非常适合做这件事，同时它也解释了为何 pointed 这一特性是 monad 接口得以存在的重要前提。不过，`map` 也能返回正确的类型：
 
 ```js
 querySelector("input.username").chain(function(uname) {
@@ -251,19 +252,17 @@ querySelector("input.username").chain(function(uname) {
 // IO("Welcome Olivia prepare for spam at olivia@tremorcontrol.net");
 ```
 
-Finally, we have two examples using `Maybe`. Since `chain` is mapping under the hood, if any value is `null`, we stop the computation dead in its tracks.
+最后两个例子用了 `Maybe`。因为 `chain` 其实是在底层调用了 `map`，所以如果遇到 `null`，代码就会立刻停止运行。
 
-Don't worry if these examples are hard to grasp at first. Play with them. Poke them with a stick. Smash them to bits and reassemble. Remember to `map` when returning a "normal" value and `chain` when we're returning another functor.
+如果觉得这些例子不太容易理解，你也不必担心。多跑跑代码，多琢磨琢磨，把代码拆开来研究研究，再把它们拼起来看看。总之记住，返回的如果是“普通”值就用 `map`，如果是 `functor` 就用 `chain`。
 
-As a reminder, this does not work with two different nested types. Functor composition and later, monad transformers, can help us in that situation.
+这里我得提醒一下，上述方式对两个不同类型的嵌套容器是不适用的。functor 组合，以及后面会讲到的 monad transformer 可以帮助我们应对这种情况。
 
-#Power trip
+## 炫耀
 
-Container style programming can be confusing at times. We sometimes find ourselves struggling to understand how many containers deep a value is or if we need `map` or `chain` (soon we'll see more container methods). We can greatly improve debugging with tricks like implementing `inspect` and we'll learn how to create a "stack" that can handle whatever effects we throw at it, but there are times when we question if it's worth the hassle.
+这种容器编程风格有时也能造成困惑，我们不得不努力理解一个值到底嵌套了几层容器，或者需要用 `map` 还是 `chain`（很快我们就会认识更多的容器类型）。使用一些技巧，比如重写 `inspect` 方法之类，能够大幅提高 debug 的效率。后面我们也会学习如何创建一个“栈”，使之能够处理任何丢给它的作用（effects）。不过，有时候我们也需要权衡一下是否值得这样做。
 
-I'd like to swing the fiery monadic sword for a moment to exhibit the power of programming this way.
-
-Let's read a file, then upload it directly afterward:
+我很乐意挥起 monad 之剑，向你展示这种编程风格的力量。就拿读一个文件，然后就把它直接上传来说吧：
 
 ```js
 // readFile :: Filename -> Either String (Future Error String)
@@ -273,11 +272,11 @@ Let's read a file, then upload it directly afterward:
 var upload = compose(map(chain(httpPost('/uploads'))), readFile);
 ```
 
-Here, we are branching our code several times. Looking at the type signatures I can see that we protect against 3 errors - `readFile` uses `Either` to validate the input (perhaps ensuring the filename is present), `readFile` may error when accessing the file as expressed in the first type parameter of `Future`, and the upload may fail for whatever reason which is expressed by the `Future` in `httpPost`. We casually pull off two nested, sequential asynchronous actions with `chain`.
+这里，代码不止一次在不同的分支执行。从类型签名可以看出，我们预防了三个错误——`readFile` 使用 `Either` 来验证输入（或许还有确保文件名存在）；`readFile` 在读取文件的时候可能会出错，错误通过 `readFile` 的 `Future` 表示；文件上传可能会因为各种各样的原因出错，错误通过 `httpPost` 的 `Future` 表示。我们就这么随意地使用 `chain` 实现了两个嵌套的、有序的异步执行动作。
 
-All of this is achieved in one linear left to right flow. This is all pure and declarative. It holds equational reasoning and reliable properties. We aren't forced to add needless and confusing variable names. Our `upload` function is written against generic interfaces and not specific one-off apis. It's one bloody line for goodness sake.
+所有这些操作都是在一个从左到右的线性流中完成的，是完完全全纯的、声明式的代码，是可以等式推导（equational reasoning）并拥有可靠特性（reliable properties）的代码。我们没有被迫使用不必要甚至令人困惑的变量名，我们的 `upload` 函数符合通用接口而不是特定的一次性接口。这些都是在一行代码中完成的啊！
 
-For contrast, let's look at the standard imperative way to pull this off:
+让我们来跟标准的命令式的实现对比一下：
 
 ```js
 //  upload :: String -> (String -> a) -> Void
@@ -296,76 +295,76 @@ var upload = function(filename, callback) {
 }
 ```
 
-Well isn't that the devil's arithmetic. We're pinballed through a volatile maze of madness. Imagine if it were a typical app that also mutated variables along the way! We'd be in the tar pit indeed.
+看看，这简直就是魔鬼的算术（译者注：此处原文是“the devil's arithmetic”，为美国 1988 年出版的历史小说，讲述一个犹太小女孩穿越到 1942 年的集中营的故事。此书亦有同名改编电影，中文译名《穿梭集中营》），我们像一颗弹珠一样在变幻莫测的迷宫中穿梭。无法想象如果这是一个典型的应用，而且一直在改变变量会怎样——我们肯定会像陷入沥青坑那样无所适从。
 
-#Theory
+# 理论
 
-The first law we'll look at is associativity, but perhaps not in the way you're used to it.
+我们要看的第一条定律是结合律，但可能不是你熟悉的那个结合律。
 
 ```js
-  // associativity
+  // 结合律
   compose(join, map(join)) == compose(join, join)
 ```
 
-These laws get at the nested nature of monads so associativity focuses on joining the inner or outer types first to acheive the same result. A picture might be more instructive:
+这些定律表明了 monad 的嵌套本质，所以结合律关心的是如何让内层或外层的容器类型 `join`，然后取得同样的结果。用一张图来表示可能更有益：
 
 <img src="images/monad_associativity.png" alt="monad associativity law" />
 
-Starting with the top left moving downward, we can `join` the outer two `M`'s of `M(M(M a))` first then cruise over to our desired `M a` with another `join`. Alternatively, we can pop the hood and flatten the inner to `M`'s with `map(join)`. We end up with the same `M a` regardless of if we join the inner or outer `M`'s first and that's what associativity is all about. It's worth noting that `map(join) != join`. The intermediate steps can vary in value, but the end result of the last `join` will be the same.
+从左上角往下，我们可以用 `join` 来合并 `M(M(M a))` 最外层的两个 `M`，然后往左，再调用一次 `join`，就得到了我们想要的 `M a`。或者，我们也可以打开最外层的 `M`，用 `map(join)` 合并内层的两个 `M`。不管是先合并内层还是先合并外层的 `M`，我们都会得到相同的 `M a`，所以这就是结合律。值得注意的一点是 `map(join) != join`。两种方式的中间步骤可能会有不同的值，但最后一个 `join` 调用后最终结果是一样的。
 
-The second law is similar:
+第二个定律与结合律类似：
 
 ```js
-  // identity for all (M a)
+  // 同一律 (M a)
   compose(join, of) == compose(join, map(of)) == id
 ```
 
-It states that, for any monad `M`, `of` and `join` amounts to `id`. We can also `map(of)` and attack it from the inside out. We call this "triangle identity" because it makes such a shape when visualized:
+这表明，对任意的 moand `M`，`of` 和 `join` 相当于 `id`。也可以使用 `map(of)` 由内而外实现相同效果。我们把这个定律叫做“三角同一律”（triangle identity），因为把它图形化之后就像一个三角形：
 
 <img src="images/triangle_identity.png" alt="monad identity law" />
 
-If we start at the top left heading right, we can see that `of` does indeed drop our `M a` in another `M` container. Then if we move downward and `join` it, we get the same as if we just called `id` in the first place. Moving right to left, we see that if we sneak under the covers with `map` and call `of` of the plain `a`, we'll still end up with `M (M a)` and `join`ing will bring us back to square one.
+如果从左上角开始往右，我们看到 `of` 的确把 `M a` 丢到另一个 `M` 容器里去了。然后再往下 `join`，我们得到了 `M a`，跟一开始就调用 `id` 的结果一样。从右上角往左，可以看到如果我们通过 `map` 进到了 `M` 里面，然后对普通值 `a` 调用 `of`，最后我们得到的还是 `M (M a)`；再调用一次 `join` 将会把我们带回原点。
 
-I should mention that I've just written `of`, however, it must be the specific `M.of` for whatever monad we're using.
+我要提及一点，尽管这里我写的是 `of`，实际上对任意的 monad 而言，都必须要使用明确的 `M.of`。
 
-Now, I've seen these laws, identity and associativity, somewhere before... Hold on, I'm thinking...Yes of course! They are the laws for a category. But that would mean we need a composition function to complete the definition. Behold:
+现在我已经见过这些定律了，同一律和结合律，以前就在哪儿见过...等一下，让我想想...是的！它们是范畴遵循的定律！不过这意味着我们需要一个组合函数来给出一个完整定义。见证吧：
+
 
 ```js
   var mcompose = function(f, g) {
     return compose(chain(f), chain(g));
   }
 
-  // left identity
+  // 左同一律
   mcompose(M, f) == f
 
-  // right identity
+  // 右同一律
   mcompose(f, M) == f
 
-  // associativity
+  // 结合律
   mcompose(mcompose(f, g), h) == mcompose(f, mcompose(g, h))
 ```
 
-They are the category laws after all. Monads form a category called the "Kleisli category" where all objects are monads and morphisms are chained functions. I don't mean to taunt you with bits and bobs of category theory without much explanation of how the jigsaw fits together. The intention is to scratch the surface enough to show the relevance and spark some interest while focusing on the practical properties we can use each day.
+毕竟它们是范畴学里的定律。monad 来自于一个叫 “Kleisli 范畴”的范畴，这个范畴里边所有的对象都是 monad，所有的态射都是联结函数（chained funtions）。我不是要在没有提供太多解释的情况下，拿范畴学里各式各样的概念来取笑你。我的目的是涉及足够多的表面知识，向你表明这中间的相关性，并在关注于日常实用特性之余，激发你对这些定律的兴趣。
 
 
-## In Summary
+## 总结
 
-Monads let us drill downward into nested computations. We can assign variables, run sequential effects, perform asynchronous tasks, all without laying one brick in a pyramid of doom. They come to the rescue when a value finds itself jailed in multiple layers of the same type. With the help of the trusty sidekick "pointed", monads are able to lend us an unboxed value and know we'll be able to place it back in when we're done.
+monad 让我们深入到嵌套的运算当中，使我们能够在完全避免回调金字塔（pyramid of doom）情况下，为变量赋值，运行有序的作用，执行异步任务等等。当一个值被困在几层相同类型的容器中时，monad 能够拯救它。借助 “pointed” 这个可靠的帮手，monad 能够借给我们从盒子中取出的值，而且知道我们会在结束使用后还给它。
 
-Yes, monads are very powerful, yet we still find ourselves needing some extra container functions. For instance, what if we wanted to run a list of api calls at once, then gather the results? We can accomplish this task with monads, but we'd have to wait for each one to finish before calling the next. What about combining several validations? We'd like to continue validating to gather the list of errors, but monads would stop the show after the first `Left` entered the picture.
+是的，monad 非常强大，但我们发现还需要一些额外的容器函数。比如，假设我们想同时运行一个列表里的 api 调用，然后再搜集返回的结果，怎么办？是可以使用 monad 实现这个任务，但我们必须要等每一个 api 完成后才能调用下一个。合并多个合法性验证呢？我们想要的肯定是持续验证以搜集错误列表，但是 monad 会在第一个 `Left` 登场的时候停掉整个演出。
 
-In the next chapter, we'll see how applicative functors fit into the container world and why we prefer them to monads in many cases.
+下一章，我们将看到 applicative functor 如何融入这个容器世界，以及为何在很多情况下它比 monad 更好用。
 
 [Chapter 10: Applicative Functors](ch10.md)
 
 
-## Exercises
+## 练习
 
 ```js
-// Exercise 1
+// 练习 1
 // ==========
-// Use safeProp and map/join or chain to safely get the street name when given
-// a user
+// 给定一个 user，使用 safeProp 和 map/join 或 chain 安全地获取 sreet 的 name
 
 var safeProp = _.curry(function (x, o) { return Maybe.of(o[x]); });
 var user = {
@@ -382,10 +381,9 @@ var user = {
 var ex1 = undefined;
 
 
-// Exercise 2
+// 练习 2
 // ==========
-// Use getFile to get the filename, remove the directory so it's just the file,
-// then purely log it.
+// 使用 getFile 获取文件名并删除目录，所以返回值仅仅是文件，然后以纯的方式打印文件
 
 var getFile = function() {
   return new IO(function(){ return __filename; });
@@ -402,10 +400,9 @@ var ex2 = undefined;
 
 
 
-// Exercise 3
+// 练习 3
 // ==========
-// Use getPost() then pass the post's id to getComments().
-//
+// 使用 getPost() 然后以 post 的 id 调用 getComments()
 var getPost = function(i) {
   return new Task(function (rej, res) {
     setTimeout(function () {
@@ -429,10 +426,9 @@ var getComments = function(i) {
 var ex3 = undefined;
 
 
-// Exercise 4
+// 练习 4
 // ==========
-// Use validateEmail, addToMailingList, and emailBlast to implmeent ex4's type
-// signature.
+// 用 validateEmail、addToMailingList 和 emailBlast 实现 ex4 的类型签名
 
 //  addToMailingList :: Email -> IO([Email])
 var addToMailingList = (function(list){

@@ -244,7 +244,7 @@ var id = function(x){ return x; };
 
 ```js
 // identity
-var identity = compose(id, f) == compose(f, id) == f;
+compose(id, f) == compose(f, id) == f;
 // true
 ```
 
