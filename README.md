@@ -1,4 +1,4 @@
-<!-- <img src="images/cover.png"/> -->
+<img src="images/cover.png"/>
 
 # 关于中文版
 
