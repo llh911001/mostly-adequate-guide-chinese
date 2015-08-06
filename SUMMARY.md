@@ -42,7 +42,7 @@
   * [异步任务](ch8.md#异步任务)
   * [一点理论](ch8.md#一点理论)
   * [总结](ch8.md#总结)
-* [第 9 章: monad](ch9.md)
+* [第 9 章: Monad](ch9.md)
   * [pointed functor](ch9.md#pointed-functor)
   * [混合比喻](ch9.md#混合比喻)
   * [chain 函数](ch9.md#chain-函数)
