@@ -1,4 +1,4 @@
-# monad
+# Monad
 
 ## pointed functor
 
