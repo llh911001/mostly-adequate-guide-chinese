@@ -4,7 +4,7 @@
 
 你好，我是 Franklin Risby 教授，很高兴认识你。接下来我们将共度一段时光了，因为我要教你一些函数式编程的知识。好了，关于我就介绍到这里，你怎么样？我希望你已经熟悉 JavaScript 语言了，关于面向对象也有一点点的经验了，而且自认为是一个合格的程序员。希望你没有昆虫学博士学位也能找到并杀死一些 bug。
 
-我并不假设你之前有任何函数式编程相关的知识——我们都知道假设的后果是什么（译者注：此处原文是“we both know what happens when you assume”，是一个著名的 meme，因为 assume 这个单词是由 ass、u 和 me 组成的）。但我猜想你在使用可变状态（mutable state）、无限制副作用（unrestricted side effects）和无原则设计（unprincipled design）的过程中已经遇到过一些麻烦。好了，介绍到此为止，我们进入正题。
+我并不假设你之前有任何函数式编程相关的知识——我们都知道假设的后果是什么（译者注：此处原文是“we both know what happens when you assume”，源自一句名言“When you assume you make an ASS of U and ME”，意思是“让两人都难堪”）。但我猜想你在使用可变状态（mutable state）、无限制副作用（unrestricted side effects）和无原则设计（unprincipled design）的过程中已经遇到过一些麻烦。好了，介绍到此为止，我们进入正题。
 
 本章的目的是让你能初步认识到函数式编程追求的是什么。我们必须要对一个程序之所以是*函数式*程序的原因有一定了解，要不然就会像无头苍蝇一样，不问青红照白地避免使用对象——这等于是在做无用功。写代码需要遵循一个重点，就像《激战》游戏里当水变成石头的时候你需要天国罗盘来指引。
 
