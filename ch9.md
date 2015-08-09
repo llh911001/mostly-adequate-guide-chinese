@@ -70,7 +70,7 @@ firstAddressStreet(
 
 这里的 functor 同样是嵌套的，函数中三个可能的失败都用了 `Maybe` 做预防也很干净整洁，但是要让最后的调用者调用三次 `map` 才能取到值未免也太无礼了点——我们和它才刚刚见面而已。这种嵌套 functor 的模式会时不时地出现，而且是 monad 的主要使用场景。
 
-我说过 monad 像洋葱，那是因为我们用 `map` 剥开嵌套的 functor 以获取它里面的值的过程中，就像剥洋葱一样会流泪。不过，我们可以擦干眼泪，做个深呼吸，然后用一个叫 `join` 的方法。
+我说过 monad 像洋葱，那是因为我们用 `map` 剥开嵌套的 functor 以获取它里面的值的过程中，就像剥洋葱一样让人忍不住想哭。不过，我们可以擦干眼泪，做个深呼吸，然后使用一个叫作 `join` 的方法。
 
 ```js
 var mmo = Maybe.of(Maybe.of("nunchucks"));
@@ -94,7 +94,7 @@ ttt.join()
 
 如果有两层相同类型的嵌套，那么我们就可以用 `join` 把它们压扁到一块去。这种结合的能力，functor 之间的联姻，就是 monad 之所以成为 monad 的原因。让我们来看看更精确的完整定义：
 
-> monad 是可以变扁的 pointed functor。
+> monad 是可以变扁（flatten）的 pointed functor。
 
 一个 functor，只要它定义个了一个 `join` 方法和一个 `of` 方法，并遵守一些定律，那么它就是一个 monad。`join` 的实现并不太复杂，我们来为 `Maybe` 定义一个：
 
@@ -106,7 +106,7 @@ Maybe.prototype.join = function() {
 
 看，就像子宫里双胞胎中的一个吃掉另一个那么简单。如果我们有一个 `Maybe(Maybe(x))`，那么 `.__value` 将会移除多余的一层，然后我们就能安心地从那开始进行 `map`。要不然，我们就将会只有一个 `Maybe`，因为从一开始就没有任何东西被 `map` 调用。
 
-既然已经有了 `join` 方法，我们把 monad 魔法作用到 `firstAddressStreet` 例子上，看看它是如何工作的：
+既然已经有了 `join` 方法，我们把 monad 魔法作用到 `firstAddressStreet` 例子上，看看它的实际作用：
 
 ```js
 //  join :: Monad m => m (m a) -> m a
@@ -131,7 +131,7 @@ IO.prototype.join = function() {
 }
 ```
 
-同样是简单地移除了一层容器。注意，我们还没有提及纯粹性的问题，仅仅是移除过渡紧缩的包裹中的一层而已。
+同样是简单地移除了一层容器。注意，我们还没有提及纯粹性的问题，仅仅是移除过度紧缩的包裹中的一层而已。
 
 ```js
 //  log :: a -> IO a
@@ -237,7 +237,7 @@ Maybe.of(null).chain(safeProp('address')).chain(safeProp('street'));
 // Maybe(null);
 ```
 
-我们本来可以用 `compose` 写上面的例子，但这将需要几个帮助函数，而且这种风格还是难免要向明确的变量赋值屈服。相反，我们使用了插入式的 `chain`。顺便说一下，`chain` 可以自动从任意类型的 `map` 和 `join` 衍生出来，就像这样：`t.prototype.chain = function(f) { return this.map(f).join(); }`。如果手动定义 `chain` 能让你觉得性能会好点的话（实际上并不会），我们也可以手动定义它，尽管还必须要费力保证函数功能的正确性——也就是说，它必须与紧接着后面有 `join` 的 `map` 相等。如果 `chain` 是简单地通过结束调用 `of` 后把值放回容器这种方式定义的，那么就会造成一个有趣的后果，即我们可以从 `chain` 那里衍生出一个 `map`。同样地，我们还可以用 `chain(id)` 定义 `join`。听起来好像是在跟魔术师玩德州扑克，魔术师想要什么牌就有什么牌；但是就像大部分的数学理论一样，所有这些原则性的结构都是相互关联的。[fantasyland](https://github.com/fantasyland/fantasy-land) 仓库中提到了许多上述衍生概念，这个仓库也是 JavaScript 官方的代数数据结构（algebraic data types）标准。
+我们本来可以用 `compose` 写上面的例子，但这将需要几个帮助函数，而且这种风格怎么说都要通过闭包进行明确的变量赋值。相反，我们使用了插入式的 `chain`。顺便说一下，`chain` 可以自动从任意类型的 `map` 和 `join` 衍生出来，就像这样：`t.prototype.chain = function(f) { return this.map(f).join(); }`。如果手动定义 `chain` 能让你觉得性能会好点的话（实际上并不会），我们也可以手动定义它，尽管还必须要费力保证函数功能的正确性——也就是说，它必须与紧接着后面有 `join` 的 `map` 相等。如果 `chain` 是简单地通过结束调用 `of` 后把值放回容器这种方式定义的，那么就会造成一个有趣的后果，即我们可以从 `chain` 那里衍生出一个 `map`。同样地，我们还可以用 `chain(id)` 定义 `join`。听起来好像是在跟魔术师玩德州扑克，魔术师想要什么牌就有什么牌；但是就像大部分的数学理论一样，所有这些原则性的结构都是相互关联的。[fantasyland](https://github.com/fantasyland/fantasy-land) 仓库中提到了许多上述衍生概念，这个仓库也是 JavaScript 官方的代数数据结构（algebraic data types）标准。
 
 好了，我们来看上面的例子。第一个例子中，可以看到两个 `Task` 通过 `chain` 连接形成了一个异步操作的序列——它先获取 `user`，然后用 `user.id` 查找 `user` 的 `friends`。`chain` 避免了 `Task(Task([Friend]))` 这种情况。
 
@@ -306,11 +306,11 @@ var upload = function(filename, callback) {
   compose(join, map(join)) == compose(join, join)
 ```
 
-这些定律表明了 monad 的嵌套本质，所以结合律关心的是如何让内层或外层的容器类型 `join`，然后取得同样的结果。用一张图来表示可能更有益：
+这些定律表明了 monad 的嵌套本质，所以结合律关心的是如何让内层或外层的容器类型 `join`，然后取得同样的结果。用一张图来表示可能效果会更好：
 
 <img src="images/monad_associativity.png" alt="monad associativity law" />
 
-从左上角往下，我们可以用 `join` 来合并 `M(M(M a))` 最外层的两个 `M`，然后往左，再调用一次 `join`，就得到了我们想要的 `M a`。或者，我们也可以打开最外层的 `M`，用 `map(join)` 合并内层的两个 `M`。不管是先合并内层还是先合并外层的 `M`，我们都会得到相同的 `M a`，所以这就是结合律。值得注意的一点是 `map(join) != join`。两种方式的中间步骤可能会有不同的值，但最后一个 `join` 调用后最终结果是一样的。
+从左上角往下，我们可以用 `join` 来合并 `M(M(M a))` 最外层的两个 `M`，然后往左，再调用一次 `join`，就得到了我们想要的 `M a`。或者，我们也可以从左上角往右，打开最外层的 `M`，用 `map(join)` 合并内层的两个 `M`。不管是先合并内层还是先合并外层的 `M`，我们都会得到相同的 `M a`，所以这就是结合律。值得注意的一点是 `map(join) != join`。两种方式的中间步骤可能会有不同的值，但最后一个 `join` 调用后最终结果是一样的。
 
 第二个定律与结合律类似：
 
@@ -345,7 +345,7 @@ var upload = function(filename, callback) {
   mcompose(mcompose(f, g), h) == mcompose(f, mcompose(g, h))
 ```
 
-毕竟它们是范畴学里的定律。monad 来自于一个叫 “Kleisli 范畴”的范畴，这个范畴里边所有的对象都是 monad，所有的态射都是联结函数（chained funtions）。我不是要在没有提供太多解释的情况下，拿范畴学里各式各样的概念来取笑你。我的目的是涉及足够多的表面知识，向你表明这中间的相关性，并在关注于日常实用特性之余，激发你对这些定律的兴趣。
+毕竟它们是范畴学里的定律。monad 来自于一个叫 “Kleisli 范畴”的范畴，这个范畴里边所有的对象都是 monad，所有的态射都是联结函数（chained funtions）。我不是要在没有提供太多解释的情况下，拿范畴学里各式各样的概念来取笑你。我的目的是涉及足够多的表面知识，向你说明这中间的相关性，让你在关注日常实用特性之余，激发起对这些定律的兴趣。
 
 
 ## 总结
