@@ -1,9 +1,12 @@
 > This is the Simplified Chinese translation of *[mostly-adequate-guide](https://github.com/DrBoolean/mostly-adequate-guide)*, thank Professor [Franklin Risby](https://github.com/DrBoolean) for his great work!
 
 # 关于中文版
+
 这是 *[mostly-adequate-guide](https://github.com/DrBoolean/mostly-adequate-guide)* 一书的中文版，原作者 [Franklin Risby](https://github.com/DrBoolean) 教授由浅入深地介绍了函数式编程的基础概念，并使用 JavaScript 编写了大量的示例代码。
 
-原书是初版草稿，这本中文版也是一样，所以任何错误都会及时更新。如果发现错漏之处，欢迎大家提 [Issue](https://github.com/llh911001/mostly-adequate-guide-chinese/issues/new)。
+翻译已得到作者[授权](https://github.com/DrBoolean/mostly-adequate-guide#other-languages)，进度也与原书进度一致，目前完成到第 2 部分。第 3 部分作者还在写作中，有更新的话我也会继续翻译。
+
+原书是初版草稿，这本中文版也是一样，所以不管是原文中的错误，还是翻译上的谬误，我都会及时做更新。如果发现错漏之处，欢迎大家提 [Issue](https://github.com/llh911001/mostly-adequate-guide-chinese/issues/new)。
 
 <!-- <img src="images/cover.png"/> -->
 
