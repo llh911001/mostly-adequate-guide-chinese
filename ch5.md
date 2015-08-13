@@ -182,7 +182,7 @@ var dasherize = compose(join('-'), map(toLower), split(' '), replace(/\s{2,}/ig,
 
 dasherize('The world is a vampire');
 
-// 'The-world-is-a-vampire'
+// 'the-world-is-a-vampire'
 ```
 
 `trace` 函数允许我们在某个特定的点观察数据以便 debug。像 haskell 和 purescript 之类的语言出于开发的方便，也都提供了类似的函数。
