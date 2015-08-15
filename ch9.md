@@ -319,7 +319,7 @@ var upload = function(filename, callback) {
   compose(join, of) == compose(join, map(of)) == id
 ```
 
-这表明，对任意的 moand `M`，`of` 和 `join` 相当于 `id`。也可以使用 `map(of)` 由内而外实现相同效果。我们把这个定律叫做“三角同一律”（triangle identity），因为把它图形化之后就像一个三角形：
+这表明，对任意的 monad `M`，`of` 和 `join` 相当于 `id`。也可以使用 `map(of)` 由内而外实现相同效果。我们把这个定律叫做“三角同一律”（triangle identity），因为把它图形化之后就像一个三角形：
 
 <img src="images/triangle_identity.png" alt="monad identity law" />
 
