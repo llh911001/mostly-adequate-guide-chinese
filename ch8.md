@@ -161,13 +161,12 @@ streetName({addresses: [{street: "Shady Ln.", number: 4201}]});
 //  withdraw :: Number -> Account -> Maybe(Account)
 var withdraw = curry(function(amount, account) {
   return account.balance >= amount ?
-    Maybe.of({balance: account.balance - amount})
-    :
+    Maybe.of({balance: account.balance - amount}) :
     Maybe.of(null);
 });
 
 //  finishTransaction :: Account -> String
-var finishTransaction = compose(remainingBalance, updateLedger);
+var finishTransaction = compose(remainingBalance, updateLedger); // <- 假定这两个函数已经在别处定义好了
 
 //  getTwenty :: Account -> Maybe(String)
 var getTwenty = compose(map(finishTransaction), withdraw(20));

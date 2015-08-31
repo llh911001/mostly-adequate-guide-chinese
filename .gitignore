@@ -4,3 +4,4 @@ less
 Gruntfile.js
 npm-debug.log
 .DS_Store
+*.swp

@@ -34,20 +34,20 @@ addTen(2);
 ```js
 var curry = require('lodash').curry;
 
-var match = curry(function(what, x) {
-  return x.match(what);
+var match = curry(function(what, str) {
+  return str.match(what);
 });
 
-var replace = curry(function(what, replacement, x) {
-  return x.replace(what, replacement);
+var replace = curry(function(what, replacement, str) {
+  return str.replace(what, replacement);
 });
 
-var filter = curry(function(f, xs) {
-  return xs.filter(f);
+var filter = curry(function(f, ary) {
+  return ary.filter(f);
 });
 
-var map = curry(function(f, xs) {
-  return xs.map(f);
+var map = curry(function(f, ary) {
+  return ary.map(f);
 });
 ```
 
@@ -116,12 +116,15 @@ var allTheChildren = function(elements) {
 
 通常我们不定义直接操作数组的函数，因为只需内联调用 `map(getChildren)` 就能达到目的。这一点同样适用于 `sort`、`filter` 以及其他的高阶函数（higher order function）[^高阶函数：参数或返回值为函数的函数]。
 
-当我们谈论*纯函数*的时候，我们说它们接受一个输入返回一个输出。curry 函数所做的正是这样：每传递一个参数调用函数，就返回一个新函数处理剩余的参数。这就是一个输入对应一个输出啊。哪怕输出是另一个函数，它也是纯函数。当然 curry 函数也允许一次传递多个参数，但这只是出于减少 `()` 的方便。
+当我们谈论*纯函数*的时候，我们说它们接受一个输入返回一个输出。curry 函数所做的正是这样：每传递一个参数调用函数，就返回一个新函数处理剩余的参数。这就是一个输入对应一个输出啊。
+
+哪怕输出是另一个函数，它也是纯函数。当然 curry 函数也允许一次传递多个参数，但这只是出于减少 `()` 的方便。
 
 ## 总结
 
-curry 函数用起来非常得心应手，每天使用它对我来说简直就是一种享受。它堪称手头必备工具，能够让函数式编程不那么繁琐和沉闷。通过简单地传递几个参数，就能动态创建实用的新函数；而且还能带来一个额外好处，那就是保留了数学的函数定义，尽管参数不止一个。
+curry 函数用起来非常得心应手，每天使用它对我来说简直就是一种享受。它堪称手头必备工具，能够让函数式编程不那么繁琐和沉闷。
 
+通过简单地传递几个参数，就能动态创建实用的新函数；而且还能带来一个额外好处，那就是保留了数学的函数定义，尽管参数不止一个。
 下一章我们将学习另一个重要的工具：`组合`（compose）。
 
 [第 5 章: 代码组合（compose）](ch5.md)
@@ -173,7 +176,7 @@ var _keepHighest = function(x,y){ return x >= y ? x : y; };
 var max = function(xs) {
   return reduce(function(acc, x){
     return _keepHighest(acc, x);
-  }, 0, xs);
+  }, -Infinity, xs);
 };
 
 
