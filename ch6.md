@@ -118,7 +118,7 @@ var url = function (term) {
 };
 ```
 
-借助 monoid 或 combinator [^后面会讲到这些概念]，我们可以使用一些奇技淫巧来让 `url` 函数变为 pointfree 函数。但是为了可读性，我们还是选择以普通的非 pointfree 的方式拼接字符串。
+借助 monoid 或 combinator （后面会讲到这些概念），我们可以使用一些奇技淫巧来让 `url` 函数变为 pointfree 函数。但是为了可读性，我们还是选择以普通的非 pointfree 的方式拼接字符串。
 
 让我们写一个 `app` 函数发送请求并把内容放置到屏幕上。
 

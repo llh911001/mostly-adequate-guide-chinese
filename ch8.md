@@ -85,7 +85,7 @@ Container.of("bombs").map(concat(' away')).map(_.prop('length'))
 
 <img src="images/cat.png" alt="cool cat, need reference" />
 
-说实话 `Container` 挺无聊的，而且通常我们称它为 `Identity`，与 `id` 函数的作用相同[^这里也是有数学上的联系的，我们会在适当时候加以说明]。除此之外，还有另外一种 functor，那就是实现了 `map` 函数的类似容器的数据类型，这种 functor 在调用 `map` 的时候能够提供非常有用的行为。现在让我们来定义一个这样的 functor。
+说实话 `Container` 挺无聊的，而且通常我们称它为 `Identity`，与 `id` 函数的作用相同（这里也是有数学上的联系的，我们会在适当时候加以说明）。除此之外，还有另外一种 functor，那就是实现了 `map` 函数的类似容器的数据类型，这种 functor 在调用 `map` 的时候能够提供非常有用的行为。现在让我们来定义一个这样的 functor。
 
 ```js
 var Maybe = function(x) {
@@ -105,7 +105,7 @@ Maybe.prototype.map = function(f) {
 }
 ```
 
-`Maybe` 看起来跟 `Container` 非常类似，但是有一点不同：`Maybe` 会先检查自己的值是否为空，然后才调用传进来的函数。这样我们在使用 `map` 的时候就能避免恼人的空值了[^注意这个实现出于教学目的做了简化]。
+`Maybe` 看起来跟 `Container` 非常类似，但是有一点不同：`Maybe` 会先检查自己的值是否为空，然后才调用传进来的函数。这样我们在使用 `map` 的时候就能避免恼人的空值了（注意这个实现出于教学目的做了简化）。
 
 ```js
 Maybe.of("Malkovich Malkovich").map(match(/a/ig));
@@ -304,7 +304,7 @@ zoltar({birthdate: 'balloons!'});
 
 如果 `birthdate` 合法，这个程序就会把它神秘的命运打印在屏幕上让我们见证；如果不合法，我们就会收到一个有着清清楚楚的错误消息的 `Left`，尽管这个消息是稳稳当当地待在它的容器里的。这种行为就像，虽然我们在抛错，但是是以一种平静温和的方式抛错，而不是像一个小孩子那样，有什么不对劲就闹脾气大喊大叫。
 
-在这个例子中，我们根据 `birthdate` 的合法性来控制代码的逻辑分支，同时又让代码进行从右到左的直线运动，而不用爬过各种条件语句的大括号。通常，我们不会把 `console.log` 放到 `zoltar` 函数里，而是在调用 `zoltar` 的时候才 `map` 它，不过本例中，让你看看 `Right` 分支如何与 `Left` 不同也是很有帮助的。我们在 `Right` 分支的类型签名中使用 `_` 表示一个应该忽略的值[^在有些浏览器中，你必须要 `console.log.bind(console)` 才能把 `console.log` 当作一等公民使用]。
+在这个例子中，我们根据 `birthdate` 的合法性来控制代码的逻辑分支，同时又让代码进行从右到左的直线运动，而不用爬过各种条件语句的大括号。通常，我们不会把 `console.log` 放到 `zoltar` 函数里，而是在调用 `zoltar` 的时候才 `map` 它，不过本例中，让你看看 `Right` 分支如何与 `Left` 不同也是很有帮助的。我们在 `Right` 分支的类型签名中使用 `_` 表示一个应该忽略的值（在有些浏览器中，你必须要 `console.log.bind(console)` 才能把 `console.log` 当作一等公民使用）。
 
 我想借此机会指出一件你可能没注意到的事：这个例子中，尽管 `fortune` 使用了 `Either`，它对每一个 functor 到底要干什么却是毫不知情的。前面例子中的 `finishTransaction` 也是一样。通俗点来讲，一个函数在调用的时候，如果被 `map` 包裹了，那么它就会从一个非 functor 函数转换为一个 functor 函数。我们把这个过程叫做 *lift*。一般情况下，普通函数更适合操作普通的数据类型而不是容器类型，在必要的时候再通过 *lift* 变为合适的容器去操作容器类型。这样做的好处是能得到更简单、重用性更高的函数，它们能够随需求而变，兼容任意 functor。
 
@@ -429,7 +429,7 @@ findParam("searchTerm").__value();
 // Maybe(['searchTerm', 'wafflehouse'])
 ```
 
-lib/params.js 把 `url` 包裹在一个 `IO` 里，然后把这头野兽传给了调用者；一双手保持的非常干净。你可能也注意到了，我们把容器也“压栈”了，要知道创建一个 `IO(Maybe([x]))` 没有任何不合理的地方。我们这个“栈”有三层 functor[^`Array` 是最有资格成为 mappable 的容器类型]，令人印象深刻。
+lib/params.js 把 `url` 包裹在一个 `IO` 里，然后把这头野兽传给了调用者；一双手保持的非常干净。你可能也注意到了，我们把容器也“压栈”了，要知道创建一个 `IO(Maybe([x]))` 没有任何不合理的地方。我们这个“栈”有三层 functor（`Array` 是最有资格成为 mappable 的容器类型），令人印象深刻。
 
 有件事困扰我很久了，现在我必须得说出来：`IO` 的 `__value` 并不是它包含的值，也不是像两个下划线暗示那样是一个私有属性。`__value` 是手榴弹的弹栓，只应该被调用者以最公开的方式拉动。为了提醒用户它的变化无常，我们把它重命名为 `unsafePerformIO` 看看。
 
