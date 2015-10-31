@@ -18,7 +18,7 @@ var user = {
   }
 };
 
-var ex1 = _.compose(chain(safeProp('name')), chain(safeProp('street')), safeProp('address'));
+var ex1 = undefined;
 
 
 // Exercise 2
@@ -27,16 +27,16 @@ var ex1 = _.compose(chain(safeProp('name')), chain(safeProp('street')), safeProp
 
 var getFile = function() {
   return new IO(function(){ return __filename; });
-};
+}
 
 var pureLog = function(x) {
   return new IO(function(){
     console.log(x);
     return 'logged ' + x; // for testing w/o mocks
   });
-};
+}
 
-var ex2 = _.compose(chain(_.compose(pureLog, _.last, split('/'))), getFile);
+var ex2 = undefined;
 
 
 
@@ -50,7 +50,7 @@ var getPost = function(i) {
       res({ id: i, title: 'Love them tasks' }); // THE POST
     }, 300);
   });
-};
+}
 
 var getComments = function(i) {
   return new Task(function (rej, res) {
@@ -58,16 +58,17 @@ var getComments = function(i) {
       res([{post_id: i, body: "This book should be illegal"}, {post_id: i, body:"Monads are like smelly shallots"}]);
     }, 300);
   });
-};
+}
 
-var ex3 = _.compose(chain(_.compose(getComments, _.prop('id'))), getPost);
+var ex3 = undefined;
 
 
 // Exercise 4
 // ==========
-// Use validateEmail and addToMailingList to implement ex4's type signature. It should 
+// Use validateEmail, addToMailingList and emailBlast to implement ex4's type signature.
+// It should safely add a new subscriber to the list, then email everyone with this happy news.
 
-//  addToMailingList :: Email -> IO([Email])
+//  addToMailingList :: Email -> IO [Email]
 var addToMailingList = (function(list){
   return function(email) {
     return new IO(function(){
@@ -77,18 +78,20 @@ var addToMailingList = (function(list){
   }
 })([]);
 
+//  emailBlast :: [Email] -> IO String
 function emailBlast(list) {
   return new IO(function(){
     return 'emailed: ' + list.join(','); // for testing w/o mocks
   });
 }
 
+//  validateEmail :: Email -> Either String Email
 var validateEmail = function(x){
   return x.match(/\S+@\S+\.\S+/) ? (new Right(x)) : (new Left('invalid email'));
-};
+}
 
 //  ex4 :: Email -> Either String (IO String)
-var ex4 = _.compose(_.map(_.compose(chain(emailBlast), addToMailingList)), validateEmail);
+var ex4 = undefined;
 
 
 module.exports = {ex1: ex1, ex2: ex2, ex3: ex3, ex4: ex4, user: user}
