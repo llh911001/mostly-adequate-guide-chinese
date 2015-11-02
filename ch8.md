@@ -310,7 +310,7 @@ zoltar({birthdate: 'balloons!'});
 
 `Either` 并不仅仅只对合法性检查这种一般性的错误作用非凡，对一些更严重的、能够中断程序执行的错误比如文件丢失或者 socket 连接断开等，`Either` 同样效果显著。你可以试试把前面例子中的 `Maybe` 替换为 `Either`，看怎么得到更好的反馈。
 
-此刻我忍不住在想，我仅仅是把 `Either` 当作一个错误消息的容器介绍给你！这样的介绍有失偏颇，它的能耐远不止于此。比如，它表示了逻辑或（也就是 `||`）。再比如，它体现了范畴学里 *coproduct* 的概念，当然本书不会涉及这方面的知识，但值得你去深入了解，因为这个概念有很多特性值得利用。还比如，它是标准的 sum type（或者叫不交并集，disjoint union of sets），因为它含有的所有可能的值的总数就是它包含的那两种类型的总数[^我知道这么说你听不懂，没关系，这里有一篇[非常棒的文章](https://www.fpcomplete.com/school/to-infinity-and-beyond/pick-of-the-week/sum-types)讲述这个问题]。`Either` 能做的事情多着呢，但是作为一个 functor，我们就用它处理错误。
+此刻我忍不住在想，我仅仅是把 `Either` 当作一个错误消息的容器介绍给你！这样的介绍有失偏颇，它的能耐远不止于此。比如，它表示了逻辑或（也就是 `||`）。再比如，它体现了范畴学里 *coproduct* 的概念，当然本书不会涉及这方面的知识，但值得你去深入了解，因为这个概念有很多特性值得利用。还比如，它是标准的 sum type（或者叫不交并集，disjoint union of sets），因为它含有的所有可能的值的总数就是它包含的那两种类型的总数（我知道这么说你听不懂，没关系，这里有一篇[非常棒的文章](https://www.fpcomplete.com/school/to-infinity-and-beyond/pick-of-the-week/sum-types)讲述这个问题）。`Either` 能做的事情多着呢，但是作为一个 functor，我们就用它处理错误。
 
 就像 `Maybe` 可以有个 `maybe` 一样，`Either` 也可以有一个 `either`。两者的用法类似，但 `either` 接受两个函数（而不是一个）和一个静态值为参数。这两个函数的返回值类型一致：
 
