@@ -48,5 +48,14 @@
   * [chain 函数](ch9.md#chain-函数)
   * [理论](ch9.md#理论)
   * [总结](ch9.md#总结)
+* [第 10 章: Applicative Functor](ch10.md)
+  * [应用 applicative functor](ch10.md#应用-applicative-functor)
+  * [瓶中之船](ch10.md#瓶中之船)
+  * [协调于激励](ch10.md#协调于激励)
+  * [lift](ch10.md#lift)
+  * [免费开瓶器](ch10.md#免费开瓶器)
+  * [定律](ch10.md#定律)
+  * [总结](ch10.md#总结)
+
 
 

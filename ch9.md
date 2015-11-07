@@ -356,7 +356,7 @@ monad 让我们深入到嵌套的运算当中，使我们能够在完全避免�
 
 下一章，我们将看到 applicative functor 如何融入这个容器世界，以及为何在很多情况下它比 monad 更好用。
 
-[Chapter 10: Applicative Functors](ch10.md)
+[第 10 章: Applicative Functor](ch10.md)
 
 
 ## 练习

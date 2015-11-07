@@ -1,12 +1,5 @@
 > This is the Simplified Chinese translation of *[mostly-adequate-guide](https://github.com/DrBoolean/mostly-adequate-guide)*, thank Professor [Franklin Risby](https://github.com/DrBoolean) for his great work!
 
-# 关于中文版
-
-这是 *[mostly-adequate-guide](https://github.com/DrBoolean/mostly-adequate-guide)* 一书的中文版，原作者 [Franklin Risby](https://github.com/DrBoolean) 教授由浅入深地介绍了函数式编程的基础概念，并使用 JavaScript 编写了大量的示例代码。
-
-翻译已得到作者[授权](https://github.com/MostlyAdequate/mostly-adequate-guide/blob/master/TRANSLATIONS.md#available-translations)，进度也与原书进度一致，目前完成到第 2 部分。第 3 部分作者还在写作中，有更新的话我也会继续翻译。
-
-原书是初版草稿，这本中文版也是一样，所以不管是原文中的错误，还是翻译上的谬误，我都会及时做更新。如果发现错漏之处，欢迎大家提 [Issue](https://github.com/llh911001/mostly-adequate-guide-chinese/issues/new)。
 
 <!-- <img src="images/cover.png"/> -->
 
@@ -83,7 +76,14 @@
   * [chain 函数](ch9.md#chain-函数)
   * [理论](ch9.md#理论)
   * [总结](ch9.md#总结)
-
+* [第 10 章: Applicative Functor](ch10.md)
+  * [应用 applicative functor](ch10.md#应用-applicative-functor)
+  * [瓶中之船](ch10.md#瓶中之船)
+  * [协调于激励](ch10.md#协调于激励)
+  * [lift](ch10.md#lift)
+  * [免费开瓶器](ch10.md#免费开瓶器)
+  * [定律](ch10.md#定律)
+  * [总结](ch10.md#总结)
 
 
 # 未来计划
