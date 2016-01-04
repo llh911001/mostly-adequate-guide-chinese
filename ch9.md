@@ -67,7 +67,20 @@ cat(".git/config")
 // IO(IO("[core]\nrepositoryformatversion = 0\n"))
 ```
 
-这里我们得到的是一个 `IO`，只不过它陷进了另一个 `IO`。要想使用它，我们必须这样调用： `map(map(f))`；要想观察它的作用，必须这样： `unsafePerformIO().unsafePerformIO()`。尽管在应用中把这两个作用打包在一起没什么不好的，但总感觉像是在穿着两套防护服工作，结果就形成一个稀奇古怪的 API。再来看另一种情况：
+这里我们得到的是一个 `IO`，只不过它陷进了另一个 `IO`。要想使用它，我们必须这样调用： `map(map(f))`；要想观察它的作用，必须这样： `unsafePerformIO().unsafePerformIO()`。
+
+```js
+//  cat :: String -> IO (IO String)
+var cat = compose(map(print), readFile);
+
+//  catFirstChar :: String -> IO (IO String)
+var catFirstChar = compose(map(map(head)), cat);
+
+catFirstChar(".git/config")
+// IO(IO("["))
+```
+
+尽管在应用中把这两个作用打包在一起没什么不好的，但总感觉像是在穿着两套防护服工作，结果就形成一个稀奇古怪的 API。再来看另一种情况：
 
 ```js
 //  safeProp :: Key -> {Key: a} -> Maybe a
