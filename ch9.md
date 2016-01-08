@@ -39,6 +39,27 @@ Either.of("The past, present and future walk into a bar...").map(
 你看，除了太空墨西哥卷（如果你听说过这个传言的话）（译者注：此处的传言似乎是说一个叫 Chris Hadfield 的宇航员在国际空间站做墨西哥卷的事，[视频链接](https://www.youtube.com/watch?v=f8-UKqGZ_hs)），monad 还被喻为洋葱。让我以一个常见的场景来说明这点：
 
 ```js
+// Support
+// ===========================
+var fs = require('fs');
+
+//  readFile :: String -> IO String
+var readFile = function(filename) {
+  return new IO(function() {
+    return fs.readFileSync(filename, 'utf-8');
+  });
+};
+
+//  print :: String -> IO String
+var print = function(x) {
+  return new IO(function() {
+    console.log(x);
+    return x;
+  });
+}
+
+// Example
+// ===========================
 //  cat :: IO (IO String)
 var cat = compose(map(print), readFile);
 
@@ -46,7 +67,20 @@ cat(".git/config")
 // IO(IO("[core]\nrepositoryformatversion = 0\n"))
 ```
 
-这里我们得到的是一个 `IO`，只不过它陷进了另一个 `IO`。要想使用它，我们必须这样调用： `map(map(f))`；要想观察它的作用，必须这样： `unsafePerformIO().unsafePerformIO()`。尽管在应用中把这两个作用打包在一起没什么不好的，但总感觉像是在穿着两套防护服工作，结果就形成一个稀奇古怪的 API。再来看另一种情况：
+这里我们得到的是一个 `IO`，只不过它陷进了另一个 `IO`。要想使用它，我们必须这样调用： `map(map(f))`；要想观察它的作用，必须这样： `unsafePerformIO().unsafePerformIO()`。
+
+```js
+//  cat :: String -> IO (IO String)
+var cat = compose(map(print), readFile);
+
+//  catFirstChar :: String -> IO (IO String)
+var catFirstChar = compose(map(map(head)), cat);
+
+catFirstChar(".git/config")
+// IO(IO("["))
+```
+
+尽管在应用中把这两个作用打包在一起没什么不好的，但总感觉像是在穿着两套防护服工作，结果就形成一个稀奇古怪的 API。再来看另一种情况：
 
 ```js
 //  safeProp :: Key -> {Key: a} -> Maybe a
