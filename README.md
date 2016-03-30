@@ -21,6 +21,13 @@
 
 以上说明，强类型的函数式语言毫无疑问将会成为本书所示范式的最佳试验场。JavaScript 是我们学习这种范式的一种手段，将它应用于什么地方则完全取决于你自己。幸运的是，所有的接口都是数学的，因而也是普适的。最终你会发现你习惯了 swiftz、scalaz、haskell 和 purescript，以及其他各种数学偏向的语言。
 
+### Gitbook (更好的阅读体验)
+
+* [在线阅读](https://llh911001.gitbooks.io/mostly-adequate-guide-chinese/content/)
+* [下载EPUB](https://www.gitbook.com/download/epub/book/llh911001/mostly-adequate-guide-chinese)
+* [下载Mobi (Kindle)](https://www.gitbook.com/download/mobi/book/llh911001/mostly-adequate-guide-chinese)
+
+
 # 目录
 
 ## 第 1 部分
