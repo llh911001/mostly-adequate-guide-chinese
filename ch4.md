@@ -143,7 +143,7 @@ var _ = require('ramda');
 
 // 练习 1
 //==============
-// 重构使之成为一个 curry 函数
+// 通过局部调用（partial apply）移除所有参数
 
 var words = function(str) {
   return split(' ', str);
@@ -151,14 +151,14 @@ var words = function(str) {
 
 // 练习 1a
 //==============
-// 使用 `map` 创建一个新函数，使之能够操作字符串数组
+// 使用 `map` 创建一个新的 `words` 函数，使之能够操作字符串数组
 
 var sentences = undefined;
 
 
 // 练习 2
 //==============
-// 重构使之成为一个 curry 函数
+// 通过局部调用（partial apply）移除所有参数
 
 var filterQs = function(xs) {
   return filter(function(x){ return match(/q/i, x);  }, xs);
