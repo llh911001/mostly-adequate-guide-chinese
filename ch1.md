@@ -8,7 +8,7 @@
 
 本章的目的是让你对函数式编程的目的有一个初步认识，对一个程序之所以是*函数式*程序的原因有一定了解，要不然就会像无头苍蝇一样，不问青红皂白地避免使用对象——这等于是在做无用功。写代码需要遵循一定的原则，就像《激战》游戏里当水变成石头的时候你需要天国罗盘来指引。
 
-现在已经有一些通用的编程原则了，各种缩写词带领我们在编程的黑暗隧道里前行：DRY（不要重复自己，dont't repeat yourself），松耦合强一致（loose coupling high cohesion），YAGNI （你不会用到它的，ya ain't gonna need it），最小意外原则（Principle of least surprise），单一责任（single responsibility）等等。
+现在已经有一些通用的编程原则了，各种缩写词带领我们在编程的黑暗隧道里前行：DRY（不要重复自己，dont't repeat yourself），高内聚低耦合（loose coupling high cohesion），YAGNI （你不会用到它的，ya ain't gonna need it），最小意外原则（Principle of least surprise），单一责任（single responsibility）等等。
 
 我当然不会啰里八嗦地把这些年我听到的原则都列举出来，你知道重点就行。重点是这些原则同样适用于函数式编程，只不过它们与本书的主题不十分相关。在我们深入主题之前，我想先通过本章给你这样一种感觉，即你在敲键盘的时候内心就能强烈感受到的那种函数式的氛围。
 
