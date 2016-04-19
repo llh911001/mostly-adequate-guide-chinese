@@ -146,7 +146,7 @@ var _ = require('ramda');
 // 通过局部调用（partial apply）移除所有参数
 
 var words = function(str) {
-  return split(' ', str);
+  return _.split(' ', str);
 };
 
 // 练习 1a
