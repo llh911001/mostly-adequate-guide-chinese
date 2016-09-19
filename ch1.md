@@ -6,7 +6,7 @@
 
 我并不假设你之前有任何函数式编程相关的知识——我们都知道假设的后果是什么（译者注：此处原文是“we both know what happens when you assume”，源自一句名言“When you assume you make an ASS of U and ME”，意思是“让两人都难堪”）。但我猜想你在使用可变状态（mutable state）、无限制副作用（unrestricted side effects）和无原则设计（unprincipled design）的过程中已经遇到过一些麻烦。好了，介绍到此为止，我们进入正题。
 
-本章的目的是让你对函数式编程的目的有一个初步认识，对一个程序之所以是*函数式*程序的原因有一定了解，要不然就会像无头苍蝇一样，不问青红皂白地避免使用对象——这等于是在做无用功。写代码需要遵循一定的原则，就像《激战》游戏里当水变成石头的时候你需要天国罗盘来指引。
+本章的目的是让你对函数式编程的目的有一个初步认识，对一个程序之所以是*函数式*程序的原因有一定了解，要不然就会像无头苍蝇一样，不问青红皂白地避免使用对象——这等于是在做无用功。写代码需要遵循一定的原则，就像水流湍急的时候你需要天文罗盘来指引一样。
 
 现在已经有一些通用的编程原则了，各种缩写词带领我们在编程的黑暗隧道里前行：DRY（不要重复自己，don't repeat yourself），高内聚低耦合（loose coupling high cohesion），YAGNI （你不会用到它的，ya ain't gonna need it），最小意外原则（Principle of least surprise），单一责任（single responsibility）等等。
 
