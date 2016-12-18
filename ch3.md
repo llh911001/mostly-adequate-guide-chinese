@@ -229,6 +229,7 @@ var signUp = function(Db, Email, attrs) {
 由于纯函数总是能够根据相同的输入返回相同的输出，所以它们就能够保证总是返回同一个结果，这也就保证了引用透明性。我们来看一个例子。
 
 ```js
+var Immutable = require('immutable');
 
 var decrementHP = function(player) {
   return player.set("hp", player.hp-1);
