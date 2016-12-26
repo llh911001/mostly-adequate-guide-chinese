@@ -195,12 +195,30 @@ var signUp = function(attrs) {
   welcomeUser(user);
 };
 
+var saveUser = function(attrs) {
+    var user = Db.save(attrs);
+    ...
+};
+
+var welcomeUser = function(user) {
+    Email(user, ...);
+    ...
+};
+
 // 纯的
 var signUp = function(Db, Email, attrs) {
   return function() {
     var user = saveUser(Db, attrs);
     welcomeUser(Email, user);
   };
+};
+
+var saveUser = function(Db, attrs) {
+    ...
+};
+
+var welcomeUser = function(Email, user) {
+    ...
 };
 ```
 
