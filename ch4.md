@@ -182,7 +182,6 @@ var max = function(xs) {
 
 // 彩蛋 1:
 // ============
-// wrap array's slice to be functional and curried.
 // 包裹数组的 `slice` 函数使之成为 curry 函数
 // //[1,2,3].slice(0, 2)
 var slice = undefined;
@@ -190,6 +189,6 @@ var slice = undefined;
 
 // 彩蛋 2:
 // ============
-// 借助 `slice` 定义一个 `take` curry 函数，接受 n 个元素为参数。
+// 借助 `slice` 定义一个 `take` curry 函数，该函数调用后可以取出字符串的前 n 个字符。
 var take = undefined;
 ```
