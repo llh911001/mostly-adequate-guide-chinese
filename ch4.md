@@ -161,7 +161,7 @@ var sentences = undefined;
 // 通过局部调用（partial apply）移除所有参数
 
 var filterQs = function(xs) {
-  return filter(function(x){ return match(/q/i, x);  }, xs);
+  return filter(function(x){ return _.match(/q/i, x);  }, xs);
 };
 
 
