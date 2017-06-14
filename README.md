@@ -27,6 +27,9 @@
 * [下载EPUB](https://www.gitbook.com/download/epub/book/llh911001/mostly-adequate-guide-chinese)
 * [下载Mobi (Kindle)](https://www.gitbook.com/download/mobi/book/llh911001/mostly-adequate-guide-chinese)
 
+### 练习题
+
+你可以在 [ScriptOJ](https://scriptoj.com/problemsGroups/593a584f36387a3df1d87422) 在线进行本书的编程练习。
 
 # 目录
 
