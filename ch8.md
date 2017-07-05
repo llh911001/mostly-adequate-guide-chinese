@@ -281,7 +281,7 @@ var getAge = curry(function(now, user) {
 getAge(moment(), {birthdate: '2005-12-12'});
 // Right(9)
 
-getAge(moment(), {birthdate: '20010704'});
+getAge(moment(), {birthdate: 'balloons!'});
 // Left("Birth date could not be parsed")
 ```
 

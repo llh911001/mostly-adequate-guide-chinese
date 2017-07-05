@@ -233,7 +233,7 @@ var applyPreferences = compose(
 
 // chain
 var applyPreferences = compose(
-  chain(setStyle), chain(log), map(JSON.parse), getItem
+  chain(setStyle('#main')), chain(log), map(JSON.parse), getItem
 );
 ```
 
