@@ -131,7 +131,7 @@ curry 函数用起来非常得心应手，每天使用它对我来说简直就�
 
 ## 练习
 
-开始练习之前先说明一下，我们将默认使用 [ramda](http://ramdajs.com) 这个库来把函数转为 curry 函数。或者你也可以选择由 losash 的作者编写和维护的 [lodash-fp](https://github.com/lodash/lodash-fp)。这两个库都很好用，选择哪一个就看你自己的喜好了。
+开始练习之前先说明一下，我们将默认使用 [ramda](http://ramdajs.com) 这个库来把函数转为 curry 函数。或者你也可以选择由 lodash 的作者编写和维护的 [lodash-fp](https://github.com/lodash/lodash-fp)。这两个库都很好用，选择哪一个就看你自己的喜好了。
 
 你还可以对自己的练习代码做[单元测试](https://github.com/llh911001/mostly-adequate-guide-chinese/tree/master/code/part1_exercises)，或者把代码拷贝到一个 REPL 里运行看看。
 
