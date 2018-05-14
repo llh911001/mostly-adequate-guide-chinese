@@ -4,7 +4,7 @@
 //
 //
 function inspect(x) {
-  return (typeof x === 'function') ? inspectFn(x) : inspectArgs(x);
+  return (typeof x === 'function') ? inspectFn(x) : x;
 }
 
 function inspectFn(f) {
