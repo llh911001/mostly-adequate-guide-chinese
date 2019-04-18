@@ -7,35 +7,22 @@
 这是 JavaScript 语言的基础概念，不过还是值得提一提的，因为在 Github 上随便一搜就能看到对这个概念的集体无视，或者也可能是无知。我们来看一个杜撰的例子：
 
 ```js
-var hi = function(name){
-  return "Hi " + name;
-};
-
-var greeting = function(name) {
-  return hi(name);
-};
+const hi = name => `Hi ${name}`;
+const greeting = name => hi(name);
 ```
 
 这里 `greeting` 指向的那个把 `hi` 包了一层的包裹函数完全是多余的。为什么？因为 JavaScript 的函数是*可调用*的，当 `hi` 后面紧跟 `()` 的时候就会运行并返回一个值；如果没有 `()`，`hi` 就简单地返回存到这个变量里的函数。我们来确认一下：
 
 ```js
-hi;
-// function(name){
-//  return "Hi " + name
-// }
-
-hi("jonas");
-// "Hi jonas"
+hi; // name => `Hi ${name}`
+hi("jonas"); // "Hi jonas"
 ```
 
 `greeting` 只不过是转了个身然后以相同的参数调用了 `hi` 函数而已，因此我们可以这么写：
 
 ```js
-var greeting = hi;
-
-
-greeting("times");
-// "Hi times"
+const greeting = hi;
+greeting("times"); // "Hi times"
 ```
 
 换句话说，`hi` 已经是个接受一个参数的函数了，为何要再定义一个额外的包裹函数，而它仅仅是用这个相同的参数调用 `hi`？完全没有道理。这就像在大夏天里穿上你最厚的大衣，只是为了跟热空气过不去，然后吃上个冰棍。真是脱裤子放屁多此一举。
@@ -46,68 +33,50 @@ greeting("times");
 
 ```js
 // 太傻了
-var getServerStuff = function(callback){
-  return ajaxCall(function(json){
-    return callback(json);
-  });
-};
+const getServerStuff = callback => ajaxCall(json => callback(json));
 
 // 这才像样
-var getServerStuff = ajaxCall;
+const getServerStuff = ajaxCall;
 ```
 
 世界上到处都充斥着这样的垃圾 ajax 代码。以下是上述两种写法等价的原因：
 
 ```js
 // 这行
-return ajaxCall(function(json){
-  return callback(json);
-});
+ajaxCall(json => callback(json));
 
 // 等价于这行
-return ajaxCall(callback);
+ajaxCall(callback);
 
 // 那么，重构下 getServerStuff
-var getServerStuff = function(callback){
-  return ajaxCall(callback);
-};
+const getServerStuff = callback => ajaxCall(callback);
 
 // ...就等于
-var getServerStuff = ajaxCall; // <-- 看，没有括号哦
+const getServerStuff = ajaxCall // <-- 看，没有括号哦
 ```
 
 各位，以上才是写函数的正确方式。一会儿再告诉你为何我对此如此执着。
 
 ```js
-var BlogController = (function() {
-  var index = function(posts) {
-    return Views.index(posts);
-  };
-
-  var show = function(post) {
-    return Views.show(post);
-  };
-
-  var create = function(attrs) {
-    return Db.create(attrs);
-  };
-
-  var update = function(post, attrs) {
-    return Db.update(post, attrs);
-  };
-
-  var destroy = function(post) {
-    return Db.destroy(post);
-  };
-
-  return {index: index, show: show, create: create, update: update, destroy: destroy};
-})();
+const BlogController = {
+  index(posts) { return Views.index(posts); },
+  show(post) { return Views.show(post); },
+  create(attrs) { return Db.create(attrs); },
+  update(post, attrs) { return Db.update(post, attrs); },
+  destroy(post) { return Db.destroy(post); },
+};
 ```
 
 这个可笑的控制器（controller）99% 的代码都是垃圾。我们可以把它重写成这样：
 
 ```js
-var BlogController = {index: Views.index, show: Views.show, create: Db.create, update: Db.update, destroy: Db.destroy};
+const BlogController = {
+  index: Views.index,
+  show: Views.show,
+  create: Db.create,
+  update: Db.update,
+  destroy: Db.destroy,
+};
 ```
 
 ...或者直接全部删掉，因为它的作用仅仅就是把视图（Views）和数据库（Db）打包在一起而已。
@@ -119,18 +88,14 @@ var BlogController = {index: Views.index, show: Views.show, create: Db.create, u
 另外，如果一个函数被不必要地包裹起来了，而且发生了改动，那么包裹它的那个函数也要做相应的变更。
 
 ```js
-httpGet('/post/2', function(json){
-  return renderPost(json);
-});
+httpGet('/post/2', json => renderPost(json));
 ```
 
 如果 `httpGet` 要改成可以抛出一个可能出现的 `err` 异常，那我们还要回过头去把“胶水”函数也改了。
 
 ```js
 // 把整个应用里的所有 httpGet 调用都改成这样，可以传递 err 参数。
-httpGet('/post/2', function(json, err){
-  return renderPost(json, err);
-});
+httpGet('/post/2', (json, err) => renderPost(json, err));
 ```
 
 写成一等公民函数的形式，要做的改动将会少得多：
@@ -145,18 +110,11 @@ httpGet('/post/2', renderPost);  // renderPost 将会在 httpGet 中调用，想
 
 ```js
 // 只针对当前的博客
-var validArticles = function(articles) {
-  return articles.filter(function(article){
-    return article !== null && article !== undefined;
-  });
-};
+const validArticles = articles =>
+  articles.filter(article => article !== null && article !== undefined),
 
-// 对未来的项目友好太多
-var compact = function(xs) {
-  return xs.filter(function(x) {
-    return x !== null && x !== undefined;
-  });
-};
+// 对未来的项目更友好
+const compact = xs => xs.filter(x => x !== null && x !== undefined);
 ```
 
 在命名的时候，我们特别容易把自己限定在特定的数据上（本例中是 `articles`）。这种现象很常见，也是重复造轮子的一大原因。
