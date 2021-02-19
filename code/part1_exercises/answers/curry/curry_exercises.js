@@ -34,7 +34,7 @@ var max = reduce(_keepHighest, -Infinity);
 // ============
 // wrap array's slice to be functional and curried.
 // //[1,2,3].slice(0, 2)
-var slice = _.curry(function(start, end, xs){ return xs.slice(start, end); });
+var slice = _.curry(Array.prototype.slice);
 
 
 // Bonus 2:
