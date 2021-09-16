@@ -251,8 +251,8 @@ getJSON('/authenticate', {username: 'stale', password: 'crackers'})
 // Task([{name: 'Seimith', id: 14}, {name: 'Ric', id: 39}]);
 
 
-querySelector("input.username").chain(function(uname) {
-  return querySelector("input.email").chain(function(email) {
+querySelector("input.username").chain(function({value: uname}) {
+  return querySelector("input.email").chain(function({value: email}) {
     return IO.of(
       "Welcome " + uname.value + " " + "prepare for spam at " + email.value
     );
