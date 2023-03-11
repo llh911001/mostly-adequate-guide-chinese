@@ -452,7 +452,7 @@ IO.prototype.map = function(f) {
 
 回调（callback）是通往地狱的狭窄的螺旋阶梯。它们是埃舍尔（译者注：荷兰版画艺术家）设计的控制流。看到一个个嵌套的回调挤在大小括号搭成的架子上，让人不由自主地联想到地牢里的灵薄狱（还能再低点么！）（译者注：灵薄狱即 limbo，基督教中地狱边缘之意）。光是想到这样的回调就让我幽闭恐怖症发作了。不过别担心，处理异步代码，我们有一种更好的方式，它的名字以“F”开头。
 
-这种方式的内部机制过于复杂，复杂得哪怕我唾沫横飞也很难讲清楚。所以我们就直接用 Quildreen Motta 的 [Folktale](http://folktalejs.org/) 里的 `Data.Task` （之前是 `Data.Future`）。来见证一些例子吧：
+这种方式的内部机制过于复杂，复杂得哪怕我唾沫横飞也很难讲清楚。所以我们就直接用 Quildreen Motta 的 [Folktale](https://folktale.origamitower.com/) 里的 `Data.Task` （之前是 `Data.Future`）。来见证一些例子吧：
 
 ```js
 // Node readfile example:
