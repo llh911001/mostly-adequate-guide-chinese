@@ -100,11 +100,11 @@ var immutableState = Object.freeze({
 
 换句话说，函数只是两种数值之间的关系：输入和输出。尽管每个输入都只会有一个输出，但不同的输入却可以有相同的输出。下图展示了一个合法的从 `x` 到 `y` 的函数关系；
 
-<img src="images/function-sets.gif" />（http://www.mathsisfun.com/sets/function.html）
+<img src="images/function-sets.gif" />（<http://www.mathsisfun.com/sets/function.html>）
 
 相反，下面这张图表展示的就*不是*一种函数关系，因为输入值 `5` 指向了多个输出：
 
-<img src="images/relation-not-function.gif" />（http://www.mathsisfun.com/sets/function.html）
+<img src="images/relation-not-function.gif" />（<http://www.mathsisfun.com/sets/function.html>）
 
 函数可以描述为一个集合，这个集合里的内容是 (输入, 输出) 对：`[(1,2), (3,6), (5,10)]`（看起来这个函数是把输入值加倍）。
 
